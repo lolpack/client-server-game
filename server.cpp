@@ -49,7 +49,7 @@ string read(int messageSizeBytes, int socket, sem_t &recSend) {
     bp = bp + bytesRecv;
   }
   cout << "MESSAGE RECEIVED" << endl;
-  sem_post(recSend);
+  sem_post(&recSend);
 
   return string(buffer);
 }
