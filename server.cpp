@@ -34,7 +34,7 @@ void send(string msgStr, int sock, int size) {
     exit(-1);
   }
 }
-string read(int messageSizeBytes, int socket, sem_t readSem) {
+string read(int messageSizeBytes, int socket, sem_t &recSend) {
   int bytesLeft = messageSizeBytes; // bytes to read
   char buffer[messageSizeBytes]; // initially empty
   char *bp = buffer; //initially point at the first element
@@ -49,7 +49,7 @@ string read(int messageSizeBytes, int socket, sem_t readSem) {
     bp = bp + bytesRecv;
   }
   cout << "MESSAGE RECEIVED" << endl;
-  sem_post(readSem);
+  sem_post(recSend);
 
   return string(buffer);
 }
@@ -60,9 +60,9 @@ void* receiveRequest(void *arg) {
 
   sem_t recSend;
   sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
-  read(5, localSockNum, &recSend); // Initial request to know how big name is;
+  read(5, localSockNum, recSend); // Initial request to know how big name is;
 
-  sem_wait(&readSem);
+  sem_wait(&recSend);
 }
 
 void processNewRequest(int clientSock) {
