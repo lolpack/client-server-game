@@ -28,13 +28,16 @@ void send(string msgStr, int sock) {
 }
 
 int main() {
+  unsigned short servPort;
+  const char *IPAddr = "0.0.0.0"; // Localhost
+  cout << "Enter a port to bind to" << endl;
+  cin >> servPort;
+
   int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (sock < 0) {
     cerr << "Error with socket" << endl; exit (-1);
   }
 
-  const char *IPAddr = "10.124.72.20";
-  unsigned short servPort = 11700;
 
   // Convert dotted decimal address to int
   unsigned long servIP;

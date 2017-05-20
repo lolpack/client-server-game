@@ -50,15 +50,19 @@ int main () {
 
   struct sockaddr_in clientAddr;
   socklen_t addrLen = sizeof(clientAddr);
-  if (accept(sock,(struct sockaddr *) &clientAddr, &addrLen) < 0) {
+
+  int clientSock = accept(sock,(struct sockaddr *) &clientAddr, &addrLen);
+  if (clientSock < 0) {
     cerr << "Error with incoming message" << endl;
     exit(-1);
   }
+
+  cout << clientSock;
   int bytesLeft = 50; // bytes to read
   char buffer[50]; // initially empty
   char *bp = buffer; //initially point at the first element
   while (bytesLeft > 0) {
-    int bytesRecv = recv(sock, (void *)bp, bytesLeft, 0);
+    int bytesRecv = recv(clientSock, (void *)bp, bytesLeft, 0);
     cout << buffer << endl;
     cout << "Bytes recev " << bytesRecv  << endl;
     if (bytesRecv <= 0) {
