@@ -34,7 +34,7 @@ void send(string msgStr, int sock, int size) {
     exit(-1);
   }
 }
-char[] read(int messageSizeBytes, int socket, sem_t readSem) {
+string read(int messageSizeBytes, int socket, sem_t readSem) {
   int bytesLeft = messageSizeBytes; // bytes to read
   char buffer[messageSizeBytes]; // initially empty
   char *bp = buffer; //initially point at the first element
@@ -50,6 +50,8 @@ char[] read(int messageSizeBytes, int socket, sem_t readSem) {
   }
   cout << "MESSAGE RECEIVED" << endl;
   sem_post(readSem);
+
+  return string(buffer);
 }
 
 void* receiveRequest(void *arg) {

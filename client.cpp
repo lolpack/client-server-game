@@ -71,12 +71,7 @@ int main(int argc, char** argv) {
   cin >> playerName;
 
   int socket = getSocket(IPAddr, servPort);
-  cout << short(playerName.length()) << endl;
-  cout << to_string(htons(short(playerName.length()))) << endl;
-
   unsigned short nameLength = htons(short(playerName.length()));
-  char data_to_send[5];
-  memcpy(&data_to_send, &nameLength, sizeof(nameLength));
-  cout << "DATA" << data_to_send;
+
   send(to_string(nameLength), socket, 5);
 }
