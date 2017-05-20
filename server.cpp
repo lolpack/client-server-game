@@ -32,4 +32,11 @@ int main () {
   if (listen(sock, MAXPENDING) < 0 ) { //Listen is non‐blocking: returns immediately.
     cerr << "Error with listen" << endl; exit (-1);
   }
+
+  struct sockaddr_in clientAddr;
+  socklen_t addrLen = sizeof(clientAddr);
+  if (accept(sock,(struct sockaddr *) &clientAddr, &addrLen) < 0) {
+    cerr << "Error with incoming message" << endl;
+    exit(-1);
+  }
 }
