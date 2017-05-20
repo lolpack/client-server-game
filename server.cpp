@@ -15,12 +15,42 @@
 
 using namespace std;
 
+sem_t maxConcurrent;
+int MAX_CONCURRENT_USERS = 10;
+sem_init(&maxConcurrent, 0, MAX_CONCURRENT_USERS - 1); // Only allow 10 users at once.
+
 void send(string msgStr, int sock) {
   char msg[50];
   if (msgStr.length() >= 50) exit(-1); // too long
   strcpy(msg, msgStr.c_str());
   int bytesSent = send(sock, (void *) msg, 50, 0);
   if (bytesSent != 50) exit(-1);
+}
+
+void* receiveRequest(void *arg) {
+  int localSockNum = *(int*)arg; // Dereference pointer so local copy of sock num is held.
+  delete (int*)arg;
+
+  int bytesLeft = 50; // bytes to read
+  char buffer[50]; // initially empty
+  char *bp = buffer; //initially point at the first element
+  while (bytesLeft > 0) {
+    int bytesRecv = recv(localSockNum, (void *)bp, bytesLeft, 0);
+    cout << buffer << endl;
+    if (bytesRecv <= 0) {
+      cerr << "Error receiving message" << endl;
+      exit(-1);
+    }
+    bytesLeft = bytesLeft - bytesRecv;
+    bp = bp + bytesRecv;
+  }
+}
+
+void processNewRequest(int clientSock) {
+  pthread_t clientThread;
+
+  pthread_create(&clientThread, NULL, &receiveRequest, (void*) new int(clientSock));
+  pthread_join(clientThread);
 }
 
 int main () {
@@ -30,7 +60,7 @@ int main () {
   cin >> PORT;
 
   struct sockaddr_in servAddr;
-  const int MAXPENDING = 5;
+  const int MAXPENDING = 10;
 
   servAddr.sin_family = AF_INET;  // always AF_INET
   servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -51,26 +81,15 @@ int main () {
   struct sockaddr_in clientAddr;
   socklen_t addrLen = sizeof(clientAddr);
 
-  int clientSock = accept(sock,(struct sockaddr *) &clientAddr, &addrLen);
-  if (clientSock < 0) {
-    cerr << "Error with incoming message" << endl;
-    exit(-1);
-  }
+  while (1) { // Continually run request acceptor.
+    sem_wait(&maxConcurrent); // Wait for available processor before accepting request.
 
-  cout << clientSock;
-  int bytesLeft = 50; // bytes to read
-  char buffer[50]; // initially empty
-  char *bp = buffer; //initially point at the first element
-  while (bytesLeft > 0) {
-    int bytesRecv = recv(clientSock, (void *)bp, bytesLeft, 0);
-    cout << buffer << endl;
-    cout << "Bytes recev " << bytesRecv  << endl;
-    if (bytesRecv <= 0) {
-      cout << "Too few";
-      exit(-1);
+    int newSock = accept(sock,(struct sockaddr *) &clientAddr, &addrLen);
+    if (newSock < 0) {
+      cerr << "Error with incoming message, ignoring request" << endl;
+    } else {
+      processNewRequest(newSock);
     }
-    bytesLeft = bytesLeft - bytesRecv;
-    bp = bp + bytesRecv;
   }
 
 
