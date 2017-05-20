@@ -17,7 +17,6 @@ using namespace std;
 
 sem_t maxConcurrent;
 int MAX_CONCURRENT_USERS = 10;
-sem_init(&maxConcurrent, 0, MAX_CONCURRENT_USERS - 1); // Only allow 10 users at once.
 
 void send(string msgStr, int sock) {
   char msg[50];
@@ -50,7 +49,7 @@ void processNewRequest(int clientSock) {
   pthread_t clientThread;
 
   pthread_create(&clientThread, NULL, &receiveRequest, (void*) new int(clientSock));
-  pthread_join(clientThread);
+  pthread_join(clientThread, NULL);
 }
 
 int main () {
@@ -80,6 +79,7 @@ int main () {
 
   struct sockaddr_in clientAddr;
   socklen_t addrLen = sizeof(clientAddr);
+  sem_init(&maxConcurrent, 0, MAX_CONCURRENT_USERS - 1); // Only allow 10 users at once.
 
   while (1) { // Continually run request acceptor.
     sem_wait(&maxConcurrent); // Wait for available processor before accepting request.
