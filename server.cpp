@@ -11,6 +11,8 @@
 #include <vector>
 #include <cstring>
 
+// Port range 11,700 - 11,799
+
 using namespace std;
 
 void send(string msgStr, int sock) {
