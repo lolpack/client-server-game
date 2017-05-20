@@ -13,26 +13,24 @@
 
 using namespace std;
 
-void send(string msgStr, int sock) {
-  char msg[50];
-  if (msgStr.length() >= 50) {
+void send(string msgStr, int sock, int size) {
+  if (msgStr.length() >= size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
+  size++;
+  char msg[size];
   strcpy(msg, msgStr.c_str());
-  int bytesSent = send(sock, (void *) msg, 50, 0);
-  if (bytesSent != 50) {
+  msg[size - 1] = '\n'; // Always end message with terminal char
+
+  int bytesSent = send(sock, (void *) msg, size, 0);
+  if (bytesSent != size) {
     cerr << "TRANSMISSION ERROR" << endl;
     exit(-1);
   }
 }
 
-int main() {
-  unsigned short servPort;
-  const char *IPAddr = "0.0.0.0"; // Localhost
-  cout << "Enter a port to bind to" << endl;
-  cin >> servPort;
-
+int getSocket(char *IPAddr, unsigned short servPort) {
   int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   if (sock < 0) {
     cerr << "Error with socket" << endl; exit (-1);
@@ -56,5 +54,29 @@ int main() {
     exit (-1);
   }
 
-  send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AAR\n", sock);
+  return sock;
+}
+
+int main(int argc, char** argv) {
+  if (argc < 3) {
+    cerr << "CLIENT MUST BE STARTED WITH IP and PORT" << endl;
+    exit(-1);
+  }
+  char *IPAddr = argv[1]; // IP Address
+  const unsigned short servPort = (unsigned short) strtoul(argv[2], NULL, 0);
+
+  string playerName;
+
+  cout << "Enter Player Name" << endl;
+  cin >> playerName;
+
+  int socket = getSocket(IPAddr, servPort);
+  cout << short(playerName.length()) << endl;
+  cout << to_string(htons(short(playerName.length()))) << endl;
+
+  unsigned short nameLength = htons(short(playerName.length()));
+  char data_to_send[5];
+  memcpy(&data_to_send, &nameLength, sizeof(nameLength));
+  cout << "DATA" << data_to_send;
+  send(to_string(nameLength), socket, 5);
 }

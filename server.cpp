@@ -18,23 +18,28 @@ using namespace std;
 sem_t maxConcurrent;
 int MAX_CONCURRENT_USERS = 10;
 
-void send(string msgStr, int sock) {
-  char msg[50];
-  if (msgStr.length() >= 50) exit(-1); // too long
+void send(string msgStr, int sock, int size) {
+  if (msgStr.length() >= size) {
+    cerr << "TOO LONG!" << endl;
+    exit(-1); // too long
+  }
+  size++;
+  char msg[size];
   strcpy(msg, msgStr.c_str());
-  int bytesSent = send(sock, (void *) msg, 50, 0);
-  if (bytesSent != 50) exit(-1);
+  msg[size - 1] = '\n'; // Always end message with terminal char
+
+  int bytesSent = send(sock, (void *) msg, size, 0);
+  if (bytesSent != size) {
+    cerr << "TRANSMISSION ERROR" << endl;
+    exit(-1);
+  }
 }
-
-void* receiveRequest(void *arg) {
-  int localSockNum = *(int*)arg; // Dereference pointer so local copy of sock num is held.
-  delete (int*)arg;
-
-  int bytesLeft = 50; // bytes to read
-  char buffer[50]; // initially empty
+char[] read(int messageSizeBytes, int socket, sem_t readSem) {
+  int bytesLeft = messageSizeBytes; // bytes to read
+  char buffer[messageSizeBytes]; // initially empty
   char *bp = buffer; //initially point at the first element
   while (bytesLeft > 0) {
-    int bytesRecv = recv(localSockNum, (void *)bp, bytesLeft, 0);
+    int bytesRecv = recv(socket, (void *)bp, bytesLeft, 0);
     cout << buffer << endl;
     if (bytesRecv <= 0) {
       cerr << "Error receiving message" << endl;
@@ -43,6 +48,19 @@ void* receiveRequest(void *arg) {
     bytesLeft = bytesLeft - bytesRecv;
     bp = bp + bytesRecv;
   }
+  cout << "MESSAGE RECEIVED" << endl;
+  sem_post(readSem);
+}
+
+void* receiveRequest(void *arg) {
+  int localSockNum = *(int*)arg; // Dereference pointer so local copy of sock num is held.
+  delete (int*)arg;
+
+  sem_t recSend;
+  sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
+  read(5, localSockNum, &recSend); // Initial request to know how big name is;
+
+  sem_wait(&readSem);
 }
 
 void processNewRequest(int clientSock) {
@@ -91,7 +109,4 @@ int main () {
       processNewRequest(newSock);
     }
   }
-
-
-  // send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AARON", sock);
 }
