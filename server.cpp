@@ -12,14 +12,26 @@
 
 using namespace std;
 
+void send(string msgStrm, int sock) {
+  char msg[50];
+  if (msgStr.length() >= 50) exit(-1); // too long
+  strcpy(msg, msgStr.c_str());
+  int bytesSent = send(sock, (void *) msg, 50, 0);
+  if (bytesSent != 50) exit(-1);
+}
+
 int main () {
-  unsigned short servPort = 4567;
+  unsigned short PORT;
+
+  cout << "Enter a port to bind to" << endl;
+  cin >> PORT;
+
   struct sockaddr_in servAddr;
   const int MAXPENDING = 5;
 
   servAddr.sin_family = AF_INET;  // always AF_INET
   servAddr.sin_addr.s_addr = htonl(INADDR_ANY);
-  servAddr.sin_port = htons(servPort);
+  servAddr.sin_port = htons(PORT);
 
   int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); if (sock < 0) {
     cerr << "Error with socket" << endl; exit (-1);
@@ -39,4 +51,14 @@ int main () {
     cerr << "Error with incoming message" << endl;
     exit(-1);
   }
+  int bytesLeft = 50; // bytes to read
+  char buffer[50]; // initially empty
+  char *bp = buffer; //initially point at the first element
+  while (bytesLeft > 0) {
+  int bytesRecv = recv(sock, (void *)bp, bytesLeft, 0); if (bytesRecv <= 0) exit(-1);
+    bytesLeft = bytesLeft - bytesRecv;
+    bp = bp + bytesRecv;
+    cout << bp;
+  }
+  send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AARON", sock);
 }
