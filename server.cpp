@@ -58,11 +58,16 @@ int main () {
   char buffer[50]; // initially empty
   char *bp = buffer; //initially point at the first element
   while (bytesLeft > 0) {
-  int bytesRecv = recv(sock, (void *)bp, bytesLeft, 0); if (bytesRecv <= 0) exit(-1);
+    int bytesRecv = recv(sock, (void *)bp, bytesLeft, 0);
+    cout << buffer << endl;
+    if (bytesRecv <= 0) {
+      cout << "Too few";
+      exit(-1);
+    }
     bytesLeft = bytesLeft - bytesRecv;
     bp = bp + bytesRecv;
   }
 
-  cout << buffer << endl;
+
   // send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AARON", sock);
 }
