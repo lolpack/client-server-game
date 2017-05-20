@@ -63,6 +63,6 @@ int main () {
     bp = bp + bytesRecv;
   }
 
-  cout << buffer < endl;
+  cout << buffer << endl;
   // send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AARON", sock);
 }
