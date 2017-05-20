@@ -26,7 +26,7 @@ int main() {
     cerr << "Error with socket" << endl; exit (-1);
   }
 
-  char *IPAddr = "10.124.70.20";
+  char *IPAddr = "0.0.0.0";
   unsigned short servPort = 11700;
 
   // Convert dotted decimal address to int
