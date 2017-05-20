@@ -9,6 +9,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 #include <vector>
+#include <cstring>
 
 using namespace std;
 
