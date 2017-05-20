@@ -11,6 +11,8 @@
 #include <vector>
 #include <cstring>
 
+using namespace std;
+
 void send(string msgStr, int sock) {
   char msg[50];
   if (msgStr.length() >= 50) exit(-1); // too long
