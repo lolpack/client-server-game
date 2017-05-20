@@ -33,7 +33,7 @@ int main() {
     cerr << "Error with socket" << endl; exit (-1);
   }
 
-  const char *IPAddr = "10.124.72.20";
+  const char *IPAddr = "0.0.0.0";
   unsigned short servPort = 11700;
 
   // Convert dotted decimal address to int
@@ -53,5 +53,5 @@ int main() {
     exit (-1);
   }
 
-  send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AARo", sock);
+  send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AAR\n", sock);
 }
