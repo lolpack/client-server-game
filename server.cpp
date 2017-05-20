@@ -61,7 +61,8 @@ int main () {
   int bytesRecv = recv(sock, (void *)bp, bytesLeft, 0); if (bytesRecv <= 0) exit(-1);
     bytesLeft = bytesLeft - bytesRecv;
     bp = bp + bytesRecv;
-    cout << bp;
   }
-  send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AARON", sock);
+
+  cout << buffer < endl;
+  // send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AARON", sock);
 }
