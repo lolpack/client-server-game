@@ -15,18 +15,25 @@ using namespace std;
 
 void send(string msgStr, int sock) {
   char msg[50];
-  if (msgStr.length() >= 50) exit(-1); // too long
+  if (msgStr.length() >= 50) {
+    cerr << "TOO LONG!" << endl;
+    exit(-1); // too long
+  }
   strcpy(msg, msgStr.c_str());
   int bytesSent = send(sock, (void *) msg, 50, 0);
-  if (bytesSent != 50) exit(-1);
+  if (bytesSent != 50) {
+    cerr << "TRANSMISSION ERROR" << endl;
+    exit(-1);
+  }
 }
 
 int main() {
-  int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); if (sock < 0) {
+  int sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  if (sock < 0) {
     cerr << "Error with socket" << endl; exit (-1);
   }
 
-  char *IPAddr = "10.124.70.20";
+  const char *IPAddr = "10.124.72.20";
   unsigned short servPort = 11700;
 
   // Convert dotted decimal address to int
@@ -46,5 +53,5 @@ int main() {
     exit (-1);
   }
 
-  send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AARON", sock);
+  send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AAR", sock);
 }
