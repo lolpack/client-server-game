@@ -60,6 +60,7 @@ int main () {
   while (bytesLeft > 0) {
     int bytesRecv = recv(sock, (void *)bp, bytesLeft, 0);
     cout << buffer << endl;
+    cout << "Bytes recev " << bytesRecv  << endl;
     if (bytesRecv <= 0) {
       cout << "Too few";
       exit(-1);

@@ -53,5 +53,5 @@ int main() {
     exit (-1);
   }
 
-  send("MY NAME IS AARON MY NAME IS AARON MY NAME IS AAR", sock);
+  send(string("MY NAME IS AARON MY NAME IS AARON MY NAME IS AARo", sock);
 }
