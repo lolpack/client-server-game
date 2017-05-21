@@ -77,11 +77,13 @@ void processNewRequest(int clientSock) {
   pthread_join(clientThread, NULL);
 }
 
-int main () {
-  unsigned short PORT;
-
-  cout << "Enter a port to bind to" << endl;
-  cin >> PORT;
+int main (int argc, char** argv) {
+  if (argc < 2) {
+    cerr << "Server MUST BE STARTED WITH PORT" << endl;
+    cerr << "Example: ./server 117000" << endl;
+    exit(-1);
+  }
+  unsigned short PORT = (unsigned short) strtoul(argv[1], NULL, 0);
 
   struct sockaddr_in servAddr;
   const int MAXPENDING = 10;

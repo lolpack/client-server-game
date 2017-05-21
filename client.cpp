@@ -33,6 +33,7 @@ void send(string msgStr, int sock, int size) {
 }
 
 string read(int messageSizeBytes, int socket) {//, sem_t &recSend) {
+  cout << "SENDING TRANSMISSION NOW" << endl;
   int bytesLeft = messageSizeBytes; // bytes to read
   char buffer[messageSizeBytes]; // initially empty
   char *bp = buffer; //initially point at the first element
