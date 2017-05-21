@@ -72,7 +72,7 @@ void* receiveRequest(void *arg) {
 
   cout << "RANDOM NUMBER " << random_number;
 
-  int nameLength = int(ntohl(stol(clientNameLength, NULL, 0)));
+  int nameLength = int(ntohs(stol(clientNameLength, NULL, 0)));
 
   cout << "length of name: " << nameLength << endl;
 
