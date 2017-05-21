@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
   unsigned short nameLength = htons(short(playerName.length()));
   cout << to_string(nameLength).length();
   send(to_string(nameLength), socket, to_string(nameLength).length());
-  read(UNISIGNED_SHORT_LENGTH, socket);
+  read(3, socket);
 
   int playerGuess;
   int turn = 1;

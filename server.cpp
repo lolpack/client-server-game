@@ -66,6 +66,8 @@ void* receiveRequest(void *arg) {
   sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
   string clientNameLength = read(5, localSockNum, recSend); // Initial request to know how big name is;
 
+  send(string("AWK"), localSockNum, 3); // Awk request
+
   int random_number = rand() % 10000; // rand() return a number between ​0​ and RAND_MAX
 
   cout << "RANDOM NUMBER " << random_number;
@@ -79,7 +81,7 @@ void* receiveRequest(void *arg) {
   cout << "NAME" << name << endl;
   // unsigned short nameLength = htons(short(localSockNum));
 
-  // send(to_string(nameLength), localSockNum, 5);
+
   // sem_wait(&recSend);
 }
 
