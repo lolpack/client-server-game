@@ -13,8 +13,10 @@
 
 using namespace std;
 
+const int UNISIGNED_SHORT_LENGTH = 5;
+
 void send(string msgStr, int sock, int size) {
-  if (msgStr.length() >= size) {
+  if (msgStr.length() >- size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
@@ -28,6 +30,26 @@ void send(string msgStr, int sock, int size) {
     cerr << "TRANSMISSION ERROR" << endl;
     exit(-1);
   }
+}
+
+string read(int messageSizeBytes, int socket) {//, sem_t &recSend) {
+  int bytesLeft = messageSizeBytes; // bytes to read
+  char buffer[messageSizeBytes]; // initially empty
+  char *bp = buffer; //initially point at the first element
+  while (bytesLeft > 0) {
+    int bytesRecv = recv(socket, (void *)bp, bytesLeft, 0);
+    cout << buffer << endl;
+    if (bytesRecv <= 0) {
+      cerr << "Error receiving message" << endl;
+      exit(-1);
+    }
+    bytesLeft = bytesLeft - bytesRecv;
+    bp = bp + bytesRecv;
+  }
+  cout << "MESSAGE RECEIVED" << endl;
+  // sem_post(&recSend);
+
+  return string(buffer);
 }
 
 int getSocket(char *IPAddr, unsigned short servPort) {
@@ -60,6 +82,7 @@ int getSocket(char *IPAddr, unsigned short servPort) {
 int main(int argc, char** argv) {
   if (argc < 3) {
     cerr << "CLIENT MUST BE STARTED WITH IP and PORT" << endl;
+    cerr << "Example: ./client 0.0.0.0 117000" << endl;
     exit(-1);
   }
   char *IPAddr = argv[1]; // IP Address
@@ -72,6 +95,7 @@ int main(int argc, char** argv) {
 
   int socket = getSocket(IPAddr, servPort);
   unsigned short nameLength = htons(short(playerName.length()));
-
-  send(to_string(nameLength), socket, 5);
+  cout << to_string(nameLength).length();
+  send(to_string(nameLength), socket, to_string(nameLength).length());
+  read(UNISIGNED_SHORT_LENGTH, socket);
 }

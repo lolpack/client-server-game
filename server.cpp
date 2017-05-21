@@ -34,6 +34,7 @@ void send(string msgStr, int sock, int size) {
     exit(-1);
   }
 }
+
 string read(int messageSizeBytes, int socket, sem_t &recSend) {
   int bytesLeft = messageSizeBytes; // bytes to read
   char buffer[messageSizeBytes]; // initially empty
@@ -62,6 +63,9 @@ void* receiveRequest(void *arg) {
   sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
   read(5, localSockNum, recSend); // Initial request to know how big name is;
 
+  unsigned short nameLength = htons(short(localSockNum));
+
+  send(to_string(nameLength), localSockNum, 5);
   sem_wait(&recSend);
 }
 
