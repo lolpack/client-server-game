@@ -83,7 +83,7 @@ int getSocket(char *IPAddr, unsigned short servPort) {
 int main(int argc, char** argv) {
   if (argc < 3) {
     cerr << "CLIENT MUST BE STARTED WITH IP and PORT" << endl;
-    cerr << "Example: ./client 0.0.0.0 117000" << endl;
+    cerr << "Example: ./client 0.0.0.0 11700" << endl;
     exit(-1);
   }
   char *IPAddr = argv[1]; // IP Address
@@ -98,6 +98,8 @@ int main(int argc, char** argv) {
 
   unsigned short nameLength = htons(short(playerName.length()));
   cout << to_string(nameLength).length();
+  cout << "NAME LENGTH " << nameLength << endl;
+  cout << "NAME LENGTH String " << to_string(nameLength) << endl;
 
   send(to_string(nameLength), socket, to_string(nameLength).length()); // Send name length before name so server know how long it should be
   read(3, socket); // Wait for AWK

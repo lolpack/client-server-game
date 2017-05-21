@@ -26,10 +26,10 @@ void send(string msgStr, int sock, int size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
-  size++;
+  // size++;
   char msg[size];
   strcpy(msg, msgStr.c_str());
-  msg[size - 1] = '\n'; // Always end message with terminal char
+  //msg[size - 1] = '\n'; // Always end message with terminal char
 
   int bytesSent = send(sock, (void *) msg, size, 0);
   if (bytesSent != size) {
@@ -76,7 +76,7 @@ void* receiveRequest(void *arg) {
 
   cout << "length of name: " << nameLength << endl;
 
-  string name = read(nameLength, localSockNum, recSend);
+  string name = read(nameLength + 1, localSockNum, recSend);
 
   cout << "NAME: " << name << endl;
   // unsigned short nameLength = htons(short(localSockNum));
@@ -88,7 +88,7 @@ void* receiveRequest(void *arg) {
   while (!correct) {
     string guessString = read(nameLength, localSockNum, recSend);
 
-    int guess = int(ntohl(stol(guessString, NULL, 0)));
+    int guess = int(ntohs(stoi(guessString, NULL, 0)));
 
     cout << "GUESS " << guess << endl;
     // sem_wait(&recSend);
