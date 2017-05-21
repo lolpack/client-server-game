@@ -72,16 +72,22 @@ void* receiveRequest(void *arg) {
 
   cout << "RANDOM NUMBER " << random_number;
 
-  long nameLength = int(ntohs(stol(clientNameLength, NULL, 0)));
+  int nameLength = int(ntohs(stol(clientNameLength, NULL, 0)));
 
   cout << "length of name: " << nameLength << endl;
 
   string name = read(nameLength, localSockNum, recSend);
 
-  cout << "NAME" << name << endl;
+  cout << "NAME: " << name << endl;
   // unsigned short nameLength = htons(short(localSockNum));
 
+  send(string("AWK"), localSockNum, 3);
 
+  string guessString = read(nameLength, localSockNum, recSend);
+
+  int guess = int(ntohs(stol(guessString, NULL, 0)));
+
+  cout << "GUESS " << guess << endl;
   // sem_wait(&recSend);
 }
 

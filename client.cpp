@@ -16,7 +16,7 @@ using namespace std;
 const int UNISIGNED_SHORT_LENGTH = 5;
 
 void send(string msgStr, int sock, int size) {
-  if (msgStr.length() >- size) {
+  if (msgStr.length() > size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
@@ -98,8 +98,13 @@ int main(int argc, char** argv) {
 
   unsigned short nameLength = htons(short(playerName.length()));
   cout << to_string(nameLength).length();
-  send(to_string(nameLength), socket, to_string(nameLength).length());
-  read(3, socket);
+
+  send(to_string(nameLength), socket, to_string(nameLength).length()); // Send name length before name so server know how long it should be
+  read(3, socket); // Wait for AWK
+
+  send(playerName, socket, playerName.length());
+
+  read(3, socket); // Wait for AWK
 
   int playerGuess;
   int turn = 1;
@@ -112,6 +117,8 @@ int main(int argc, char** argv) {
 
     unsigned long guess = htonl(long(playerGuess));
     send(to_string(guess), socket, to_string(guess).length());
+
+    turn++;
   }
 
 
