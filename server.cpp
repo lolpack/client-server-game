@@ -86,7 +86,7 @@ void* receiveRequest(void *arg) {
   bool correct = false;
 
   while (!correct) {
-    string guessString = read(nameLength, localSockNum, recSend);
+    string guessString = read(5, localSockNum, recSend);
 
     int guess = int(ntohs(stoi(guessString, NULL, 0)));
 
