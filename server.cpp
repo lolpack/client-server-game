@@ -88,7 +88,7 @@ void* receiveRequest(void *arg) {
   while (!correct) {
     string guessString = read(5, localSockNum, recSend);
 
-    int guess = int(ntohs(stoi(guessString, NULL, 0)));
+    int guess = int(ntohs(stol(guessString, NULL, 0)));
 
     cout << "GUESS " << guess << endl;
     // sem_wait(&recSend);
