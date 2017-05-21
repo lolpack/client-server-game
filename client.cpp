@@ -33,7 +33,7 @@ void send(string msgStr, int sock, int size) {
 }
 
 string read(int messageSizeBytes, int socket) {//, sem_t &recSend) {
-  cout << "SENDING TRANSMISSION NOW" << endl;
+  cout << "RECEIVING TRANSMISSION NOW" << endl;
   int bytesLeft = messageSizeBytes; // bytes to read
   char buffer[messageSizeBytes]; // initially empty
   char *bp = buffer; //initially point at the first element
@@ -91,12 +91,28 @@ int main(int argc, char** argv) {
 
   string playerName;
 
-  cout << "Enter Player Name" << endl;
+  cout << "Welcome to Number Guessing Game! Enter your name:  ";
   cin >> playerName;
 
   int socket = getSocket(IPAddr, servPort);
+
   unsigned short nameLength = htons(short(playerName.length()));
   cout << to_string(nameLength).length();
   send(to_string(nameLength), socket, to_string(nameLength).length());
   read(UNISIGNED_SHORT_LENGTH, socket);
+
+  int playerGuess;
+  int turn = 1;
+  bool correct = false;
+
+  while (!correct) {
+    cout << "Turn: " << turn << endl;
+    cout << "Enter a guess: ";
+    cin >> playerGuess;
+
+    unsigned long guess = htonl(long(playerGuess));
+    send(to_string(guess), socket, to_string(guess).length());
+  }
+
+
 }

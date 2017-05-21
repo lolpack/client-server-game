@@ -10,6 +10,8 @@
 #include <semaphore.h>
 #include <vector>
 #include <cstring>
+#include <cstdlib>
+#include <ctime>
 
 // Port range 11,700 - 11,799
 
@@ -62,12 +64,23 @@ void* receiveRequest(void *arg) {
 
   sem_t recSend;
   sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
-  read(5, localSockNum, recSend); // Initial request to know how big name is;
+  string clientNameLength = read(5, localSockNum, recSend); // Initial request to know how big name is;
 
-  unsigned short nameLength = htons(short(localSockNum));
+  int random_number = rand() % 10000; // rand() return a number between ​0​ and RAND_MAX
 
-  send(to_string(nameLength), localSockNum, 5);
-  sem_wait(&recSend);
+  cout << "RANDOM NUMBER " << random_number;
+
+  long nameLength = int(ntohs(stol(clientNameLength, NULL, 0)));
+
+  cout << "length of name: " << nameLength << endl;
+
+  string name = read(nameLength, localSockNum, recSend);
+
+  cout << "NAME" << name << endl;
+  // unsigned short nameLength = htons(short(localSockNum));
+
+  // send(to_string(nameLength), localSockNum, 5);
+  // sem_wait(&recSend);
 }
 
 void processNewRequest(int clientSock) {
@@ -80,10 +93,12 @@ void processNewRequest(int clientSock) {
 int main (int argc, char** argv) {
   if (argc < 2) {
     cerr << "Server MUST BE STARTED WITH PORT" << endl;
-    cerr << "Example: ./server 117000" << endl;
+    cerr << "Example: ./server 11700" << endl;
     exit(-1);
   }
   unsigned short PORT = (unsigned short) strtoul(argv[1], NULL, 0);
+
+  srand(time(NULL)); // Init random number generator
 
   struct sockaddr_in servAddr;
   const int MAXPENDING = 10;
