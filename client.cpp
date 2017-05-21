@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
     cout << "Enter a guess: ";
     cin >> playerGuess;
 
-    unsigned long guess = htonl(long(playerGuess));
+    unsigned short guess = htons(short(playerGuess));
     send(to_string(guess), socket, to_string(guess).length());
 
     turn++;
