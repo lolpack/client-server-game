@@ -22,7 +22,7 @@ int MAX_CONCURRENT_USERS = 10;
 
 void send(string msgStr, int sock, int size) {
   cout << "This code is hit!" << endl;
-  if (msgStr.length() >= size) {
+  if (msgStr.length() > size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
