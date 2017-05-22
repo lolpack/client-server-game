@@ -27,6 +27,8 @@ void send(string msgStr, int sock, int size) {
   strcpy(msg, newString.c_str());
   msg[size - 1] = '\n'; // Always end message with terminal char
 
+  cout << "FINAL SIZE " << size << endl;
+  cout << "MESSAGE " << msg << endl;
   int bytesSent = send(sock, (void *) msg, size, 0);
   if (bytesSent != size) {
     cerr << "TRANSMISSION ERROR" << endl;
