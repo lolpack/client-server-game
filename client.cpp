@@ -47,6 +47,7 @@ string read(int messageSizeBytes, int socket) {//, sem_t &recSend) {
       cerr << "Error receiving message" << endl;
       exit(-1);
     }
+    cout << bytesLeft << "BYSTES LEFT" << buffer << "BUFFER SO FAR" << endl;
     bytesLeft = bytesLeft - bytesRecv;
     bp = bp + bytesRecv;
   }
