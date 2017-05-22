@@ -58,6 +58,12 @@ string read(int messageSizeBytes, int socket, sem_t &recSend) {
   return string(buffer);
 }
 
+int calculateDifference(int guess, int randomNumber) {
+  int diff = guess - randomNumber;
+  cout << "THE DIFFERENCE " << diff << endl;
+  cout << "THE ABS DIFFERENCE" << abs(diff)
+}
+
 void* receiveRequest(void *arg) {
   int localSockNum = *(int*)arg; // Dereference pointer so local copy of sock num is held.
   delete (int*)arg;
@@ -68,9 +74,9 @@ void* receiveRequest(void *arg) {
 
   send(string("AWK"), localSockNum, 3); // Awk request
 
-  int random_number = rand() % 10000; // rand() return a number between ​0​ and 9999;
+  int randomNumber ;= rand() % 10000; // rand() return a number between ​0​ and 9999;
 
-  cout << "RANDOM NUMBER " << random_number;
+  cout << "RANDOM NUMBER " << randomNumber;;
 
   int nameLength = int(ntohs(stol(clientNameLength, NULL, 0)));
 
@@ -95,6 +101,8 @@ void* receiveRequest(void *arg) {
     cout << "STOL " << stol(guessString) << endl;
 
     cout << "GUESS " << guess << endl;
+
+    calculateDifference(guess, randomNumber);
     // sem_wait(&recSend);
   }
 }
