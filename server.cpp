@@ -26,7 +26,7 @@ void send(string msgStr, int sock, int size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
-  size += 1;
+  size += 2;
   char msg[size];
   strcpy(msg, msgStr.c_str());
   msg[size - 1] = '\n'; // Always end message with terminal char
@@ -80,7 +80,7 @@ void* receiveRequest(void *arg) {
 
   sem_t recSend;
   sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
-  string clientNameLength = read(5, localSockNum, recSend); // Initial request to know how big name is;
+  string clientNameLength = read(6, localSockNum, recSend); // Initial request to know how big name is;
 
   send(string("AWK"), localSockNum, 3); // Awk request
 
@@ -102,7 +102,7 @@ void* receiveRequest(void *arg) {
   bool correct = false;
 
   while (!correct) {
-    string guessString = read(5, localSockNum, recSend);
+    string guessString = read(6, localSockNum, recSend);
 
     int guess = short(ntohs(stol(guessString)));
 

@@ -20,7 +20,7 @@ void send(string msgStr, int sock, int size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
-  size += 1;
+  size += 2;
   char msg[size];
   strcpy(msg, msgStr.c_str());
   msg[size - 1] = '\n'; // Always end message with terminal char
@@ -102,11 +102,11 @@ int main(int argc, char** argv) {
   cout << "NAME LENGTH String " << to_string(nameLength) << endl;
 
   send(to_string(nameLength), socket, to_string(nameLength).length()); // Send name length before name so server know how long it should be
-  read(4, socket); // Wait for AWK
+  read(5, socket); // Wait for AWK
 
   send(playerName, socket, playerName.length());
 
-  read(4, socket); // Wait for AWK
+  read(5, socket); // Wait for AWK
 
   int playerGuess;
   int turn = 1;
