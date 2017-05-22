@@ -27,7 +27,7 @@ void send(string msgStr, int sock, int size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
-  size += 2;
+  size++;
   char msg[size];
   strcpy(msg, newString.c_str());
   msg[size - 1] = '\n'; // Always end message with terminal char
@@ -118,7 +118,7 @@ void* receiveRequest(void *arg) {
 
     unsigned short sendiff = htons(short(diff));
     cout << "Diff:  " << sendiff << "length" << to_string(sendiff).length() << endl;
-    send(to_string(sendiff), localSockNum, 4);
+    send(to_string(sendiff), localSockNum, 5);
     // sem_wait(&recSend);
   }
 }
