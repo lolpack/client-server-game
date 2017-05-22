@@ -116,7 +116,7 @@ void* receiveRequest(void *arg) {
 
     unsigned short sendiff = htons(short(diff));
     cout << "Diff:  " << sendiff << "length" << to_string(sendiff).length() << endl;
-    send(to_string(sendiff), localSockNum, to_string(sendiff).length());
+    send(to_string(sendiff), localSockNum, 4);
     // sem_wait(&recSend);
   }
 }
@@ -129,9 +129,6 @@ void processNewRequest(int clientSock) {
 }
 
 int main (int argc, char** argv) {
-  calculateDifference(1234, 5000);
-  calculateDifference(1111, 4354);
-  calculateDifference(12, 1234);
   if (argc < 2) {
     cerr << "Server MUST BE STARTED WITH PORT" << endl;
     cerr << "Example: ./server 11700" << endl;
