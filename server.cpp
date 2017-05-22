@@ -91,8 +91,8 @@ void* receiveRequest(void *arg) {
     int guess = short(ntohs(stol(guessString)));
 
     cout << "SHORT " << short(ntohs(stol(guessString))) << endl;
-    cout << "NTOHS " << ntohs(stol(guessString)); << endl;
-    cout << "STOL " << stol(guessString); << endl;
+    cout << "NTOHS " << ntohs(stol(guessString)) << endl;
+    cout << "STOL " << stol(guessString) << endl;
 
     cout << "GUESS " << guess << endl;
     // sem_wait(&recSend);
