@@ -44,7 +44,6 @@ string read(int messageSizeBytes, int socket, sem_t &recSend) {
   char *bp = buffer; //initially point at the first element
   while (bytesLeft > 0) {
     int bytesRecv = recv(socket, (void *)bp, bytesLeft, 0);
-    cout << buffer << endl;
     if (bytesRecv <= 0) {
       cerr << "Error receiving message" << endl;
       exit(-1);
@@ -53,6 +52,7 @@ string read(int messageSizeBytes, int socket, sem_t &recSend) {
     bp = bp + bytesRecv;
   }
   cout << "MESSAGE RECEIVED" << endl;
+  cout << buffer << endl;
   sem_post(&recSend);
 
   return string(buffer);
@@ -68,7 +68,7 @@ void* receiveRequest(void *arg) {
 
   send(string("AWK"), localSockNum, 3); // Awk request
 
-  int random_number = rand() % 10000; // rand() return a number between ​0​ and RAND_MAX
+  int random_number = rand() % 10000; // rand() return a number between ​0​ and 9999;
 
   cout << "RANDOM NUMBER " << random_number;
 
@@ -88,7 +88,7 @@ void* receiveRequest(void *arg) {
   while (!correct) {
     string guessString = read(6, localSockNum, recSend);
 
-    int guess = int(ntohs(stol(guessString, NULL, 0)));
+    int guess = int(ntohs(stol(guessString)));
 
     cout << "GUESS " << guess << endl;
     // sem_wait(&recSend);
