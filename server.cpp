@@ -64,7 +64,7 @@ int calculateDifference(int guess, int randomNumber) {
   cout << "THE ABS DIFFERENCE" << abs(diff) << endl;
 
   int absDiff = abs(diff);
-  int sum;
+  int sum = 0;
   // Pull off highest order number and add it to itself
   for (int i = to_string(absDiff).length(); i >= 0; i--) {
       sum += absDiff % 10;
@@ -129,6 +129,9 @@ void processNewRequest(int clientSock) {
 }
 
 int main (int argc, char** argv) {
+  calculateDifference(1234, 5000);
+  calculateDifference(1111, 4354);
+  calculateDifference(12, 1234);
   if (argc < 2) {
     cerr << "Server MUST BE STARTED WITH PORT" << endl;
     cerr << "Example: ./server 11700" << endl;
