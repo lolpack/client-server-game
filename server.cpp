@@ -80,7 +80,7 @@ void* receiveRequest(void *arg) {
 
   sem_t recSend;
   sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
-  string clientNameLength = read(5, localSockNum, recSend); // Initial request to know how big name is;
+  string clientNameLength = read(6, localSockNum, recSend); // Initial request to know how big name is;
 
   send(string("AWK"), localSockNum, 3); // Awk request
 

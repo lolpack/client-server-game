@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
 
   int socket = getSocket(IPAddr, servPort);
 
-  unsigned short nameLength = htons(short(playerName.length()));
+  unsigned short nameLength = htons(short(playerName.length() + 2));
   cout << to_string(nameLength).length();
   cout << "NAME LENGTH " << nameLength << endl;
   cout << "NAME LENGTH String " << to_string(nameLength) << endl;
