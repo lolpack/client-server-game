@@ -61,7 +61,7 @@ string read(int messageSizeBytes, int socket, sem_t &recSend) {
 int calculateDifference(int guess, int randomNumber) {
   int diff = guess - randomNumber;
   cout << "THE DIFFERENCE " << diff << endl;
-  cout << "THE ABS DIFFERENCE" << abs(diff);
+  cout << "THE ABS DIFFERENCE" << abs(diff) << endl;
 
   int absDiff = abs(diff);
   int sum;
@@ -70,7 +70,7 @@ int calculateDifference(int guess, int randomNumber) {
       sum += absDiff % 10;
       absDiff /= 10;
   }
-  cout << "ABS DIFF" << sum;
+  cout << "ABS DIFF" << sum << endl;
   return sum;
 }
 

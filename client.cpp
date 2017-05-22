@@ -121,7 +121,7 @@ int main(int argc, char** argv) {
     cout << "GUESS " << guess << "length" << to_string(guess).length() <<endl;
     send(to_string(guess), socket, to_string(guess).length());
 
-    string resultOfGuess = read(6, socket); // Wait for AWK
+    string resultOfGuess = read(5, socket); // Wait for AWK
     int result = short(ntohs(stol(resultOfGuess)));
 
     cout << "Result of guess: " << result << endl;
