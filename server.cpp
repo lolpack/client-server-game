@@ -121,15 +121,14 @@ void* receiveRequest(void *arg) {
     unsigned short sendiff = htons(short(diff));
     cout << "Diff:  " << sendiff << "length" << to_string(sendiff).length() << endl;
     send(to_string(sendiff), localSockNum, 5);
+
+    if (sendiff == 0) {
+      correct = false;
+    }
     // sem_wait(&recSend);
   }
-}
 
-void processNewRequest(int clientSock) {
-  pthread_t clientThread;
 
-  pthread_create(&clientThread, NULL, &receiveRequest, (void*) new int(clientSock));
-  pthread_join(clientThread, NULL);
 }
 
 int main (int argc, char** argv) {
@@ -163,16 +162,19 @@ int main (int argc, char** argv) {
 
   struct sockaddr_in clientAddr;
   socklen_t addrLen = sizeof(clientAddr);
-  sem_init(&maxConcurrent, 0, MAX_CONCURRENT_USERS - 1); // Only allow 10 users at once.
+  sem_init(&maxConcurrent, 0, MAX_CONCURRENT_USERS); // Only allow 10 users at once.
 
   while (1) { // Continually run request acceptor.
-    sem_wait(&maxConcurrent); // Wait for available processor before accepting request.
+    // sem_wait(&maxConcurrent); // Wait for available processor before accepting request.
 
     int newSock = accept(sock,(struct sockaddr *) &clientAddr, &addrLen);
     if (newSock < 0) {
       cerr << "Error with incoming message, ignoring request" << endl;
     } else {
-      processNewRequest(newSock);
+      pthread_t clientThread;
+
+      pthread_create(&clientThread, NULL, &receiveRequest, (void*) new int(newSock));
+      pthread_join(clientThread, NULL);
     }
   }
 }
