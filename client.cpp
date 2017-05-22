@@ -102,11 +102,11 @@ int main(int argc, char** argv) {
   cout << "NAME LENGTH String " << to_string(nameLength) << endl;
 
   send(to_string(nameLength), socket, to_string(nameLength).length()); // Send name length before name so server know how long it should be
-  read(3, socket); // Wait for AWK
+  read(4, socket); // Wait for AWK
 
   send(playerName, socket, playerName.length());
 
-  read(3, socket); // Wait for AWK
+  read(4, socket); // Wait for AWK
 
   int playerGuess;
   int turn = 1;
