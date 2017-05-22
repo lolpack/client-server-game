@@ -104,6 +104,7 @@ void* receiveRequest(void *arg) {
   while (!correct) {
     string guessString = read(6, localSockNum, recSend);
 
+    cout << "GUESS STRING " << guessString << endl;
     int guess = short(ntohs(stol(guessString)));
 
     cout << "SHORT " << short(ntohs(stol(guessString))) << endl;
