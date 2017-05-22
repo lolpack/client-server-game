@@ -106,7 +106,7 @@ int main(int argc, char** argv) {
   cout << "NAME LENGTH String " << to_string(nameLength) << endl;
 
   send(to_string(nameLength), socket, 5); // Send name length before name so server know how long it should be
-  read(4, socket); // Wait for AWK
+  read(3, socket); // Wait for AWK
 
   send(playerName, socket, playerName.length());
 
