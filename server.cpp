@@ -62,6 +62,16 @@ int calculateDifference(int guess, int randomNumber) {
   int diff = guess - randomNumber;
   cout << "THE DIFFERENCE " << diff << endl;
   cout << "THE ABS DIFFERENCE" << abs(diff);
+
+  int absDiff = abs(diff);
+  int sum;
+  // Pull off highest order number and add it to itself
+  for (int i = to_string(absDiff).length(); i >= 0; i--) {
+      sum += absDiff % 10;
+      absDiff /= 10;
+  }
+  cout << "ABS DIFF" << sum;
+  return sum;
 }
 
 void* receiveRequest(void *arg) {
@@ -102,7 +112,11 @@ void* receiveRequest(void *arg) {
 
     cout << "GUESS " << guess << endl;
 
-    calculateDifference(guess, randomNumber);
+    int diff = calculateDifference(guess, randomNumber);
+
+    unsigned short sendiff = htons(short(diff));
+    cout << "Diff:  " << sendiff << "length" << to_string(sendiff).length() << endl;
+    send(to_string(sendiff), localSockNum, to_string(sendiff).length());
     // sem_wait(&recSend);
   }
 }
