@@ -21,14 +21,15 @@ sem_t maxConcurrent;
 int MAX_CONCURRENT_USERS = 10;
 
 void send(string msgStr, int sock, int size) {
+  string newString = string(size - msgStr.length(), '0') + msgStr;
   cout << "This code is hit!" << endl;
-  if (msgStr.length() > size) {
+  if (newString.length() > size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
   size += 2;
   char msg[size];
-  strcpy(msg, msgStr.c_str());
+  strcpy(msg, newString.c_str());
   msg[size - 1] = '\n'; // Always end message with terminal char
 
   int bytesSent = send(sock, (void *) msg, size, 0);

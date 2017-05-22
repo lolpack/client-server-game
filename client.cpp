@@ -16,13 +16,15 @@ using namespace std;
 const int UNISIGNED_SHORT_LENGTH = 5;
 
 void send(string msgStr, int sock, int size) {
-  if (msgStr.length() > size) {
+  string newString = string(size - msgStr.length(), '0') + msgStr;
+
+  if (newString.length() > size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
   size += 2;
   char msg[size];
-  strcpy(msg, msgStr.c_str());
+  strcpy(msg, newString.c_str());
   msg[size - 1] = '\n'; // Always end message with terminal char
 
   int bytesSent = send(sock, (void *) msg, size, 0);
@@ -121,7 +123,7 @@ int main(int argc, char** argv) {
     cout << "GUESS " << guess << "length" << to_string(guess).length() <<endl;
     send(to_string(guess), socket, 5);
 
-    string resultOfGuess = read(6, socket); // Wait for AWK
+    string resultOfGuess = read(5, socket); // Wait for AWK
     int result = short(ntohs(stol(resultOfGuess)));
 
     cout << "Result of guess: " << result << endl;

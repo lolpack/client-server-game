@@ -32,3 +32,5 @@
 *.app
 server
 client
+
+client.dSYM
