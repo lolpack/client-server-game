@@ -26,7 +26,7 @@ void send(string msgStr, int sock, int size) {
     cerr << "TOO LONG!" << endl;
     exit(-1); // too long
   }
-  size++;
+  size += 2;
   char msg[size];
   strcpy(msg, msgStr.c_str());
   msg[size - 1] = '\n'; // Always end message with terminal char
