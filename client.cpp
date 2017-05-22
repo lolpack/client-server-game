@@ -39,7 +39,6 @@ string read(int messageSizeBytes, int socket) {//, sem_t &recSend) {
   char *bp = buffer; //initially point at the first element
   while (bytesLeft > 0) {
     int bytesRecv = recv(socket, (void *)bp, bytesLeft, 0);
-    cout << buffer << endl;
     if (bytesRecv <= 0) {
       cerr << "Error receiving message" << endl;
       exit(-1);
@@ -48,6 +47,7 @@ string read(int messageSizeBytes, int socket) {//, sem_t &recSend) {
     bp = bp + bytesRecv;
   }
   cout << "MESSAGE RECEIVED" << endl;
+  cout << buffer << endl;
   // sem_post(&recSend);
 
   return string(buffer);
@@ -102,11 +102,11 @@ int main(int argc, char** argv) {
   cout << "NAME LENGTH String " << to_string(nameLength) << endl;
 
   send(to_string(nameLength), socket, to_string(nameLength).length()); // Send name length before name so server know how long it should be
-  read(3, socket); // Wait for AWK
+  read(4, socket); // Wait for AWK
 
   send(playerName, socket, playerName.length());
 
-  read(3, socket); // Wait for AWK
+  read(4, socket); // Wait for AWK
 
   int playerGuess;
   int turn = 1;
@@ -118,6 +118,7 @@ int main(int argc, char** argv) {
     cin >> playerGuess;
 
     unsigned short guess = htons(short(playerGuess));
+    cout << "GUESS " << guess << "length" << to_string(guess).length() <<endl;
     send(to_string(guess), socket, to_string(guess).length());
 
     turn++;
