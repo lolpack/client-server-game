@@ -128,7 +128,12 @@ void* receiveRequest(void *arg) {
     // sem_wait(&recSend);
   }
 
+  string turns = read(6, localSockNum, recSend);
 
+  cout << "TURNS " << turns << endl;
+  int turns = short(ntohs(stol(turns)));
+
+  close(localSockNum);
 }
 
 int main (int argc, char** argv) {
@@ -163,8 +168,9 @@ int main (int argc, char** argv) {
   struct sockaddr_in clientAddr;
   socklen_t addrLen = sizeof(clientAddr);
   sem_init(&maxConcurrent, 0, MAX_CONCURRENT_USERS); // Only allow 10 users at once.
+  int threadNumber = 0;
 
-  while (1) { // Continually run request acceptor.
+  while (threadNumber < 10) { // Continually run request acceptor.
     // sem_wait(&maxConcurrent); // Wait for available processor before accepting request.
 
     int newSock = accept(sock,(struct sockaddr *) &clientAddr, &addrLen);
@@ -174,7 +180,9 @@ int main (int argc, char** argv) {
       pthread_t clientThread;
 
       pthread_create(&clientThread, NULL, &receiveRequest, (void*) new int(newSock));
-      pthread_join(clientThread, NULL);
+      pthread_detach(clientThread);
     }
+
+    threadNumber ++;
   }
 }

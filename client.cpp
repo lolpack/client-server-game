@@ -133,10 +133,16 @@ int main(int argc, char** argv) {
 
     if (result == 0) {
       cout << "Congratulations! It took " << turn << " turns to guess the number!"  << endl;
+      correct = false;
     } else {
       turn++;
     }
   }
 
+  unsigned short turns = htons(short(playerGuess));
+  cout << "Turns " << turns << "length" << to_string(turns).length() <<endl;
+  send(to_string(turns), socket, 5);
+
+  close(socket);
 
 }
