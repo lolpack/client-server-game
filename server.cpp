@@ -31,7 +31,7 @@ struct compareWinners {
   }
 };
 
-priority_queue<Winner, vector<Winner>, compareWinners> leaderBoard;
+priority_queue<Winner, vector<Winner>, compareWinners> *leaderBoard = new priority_queue<Winner, vector<Winner>, compareWinners>;
 vector<Winner> tempLeaderBoard;
 
 sem_t maxConcurrent;
@@ -157,18 +157,18 @@ void* receiveRequest(void *arg) {
 
   sem_wait(&leaderBoardLock);
 
-  leaderBoard.push(winner);
+  leaderBoard->push(winner);
 
   string leaderBoardText;
 
   int topThree = 4; // Iterate through the first 3 in Pqueue or the number of values in Pqueue
-  if (leaderBoard.size() < 3) {
-    topThree = leaderBoard.size();
+  if (leaderBoard->size() < 3) {
+    topThree = leaderBoard->size();
   }
 
   for (int j = 0; j < topThree; j++) {
-    Winner tempwin = leaderBoard.top();
-    leaderBoard.pop();
+    Winner tempwin = leaderBoard->top();
+    leaderBoard->pop();
     string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin.name) + string(" ") + string(to_string(tempwin.turns)) + string("&&");
 
     leaderBoardText = leaderBoardText + eachRow;
@@ -179,7 +179,7 @@ void* receiveRequest(void *arg) {
   cout << leaderBoardText << endl;
 
   for (int k = 1; k < topThree; k++) {
-    leaderBoard.push(tempLeaderBoard.back()); // Take items temporarily in pQueue and put it back in vector;
+    leaderBoard->push(tempLeaderBoard.back()); // Take items temporarily in pQueue and put it back in vector;
     tempLeaderBoard.pop_back();
   }
 
