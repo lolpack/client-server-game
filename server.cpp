@@ -148,8 +148,8 @@ void* receiveRequest(void *arg) {
 
   string turnsResponse = read(6, localSockNum, recSend);
 
-  cout << "TURNS " << turnsResponse << endl;
   int turns = short(ntohs(stol(turnsResponse)));
+  cout << "TURNS " << turns << endl;
 
   Winner winner;
   Winner winner2;
@@ -179,15 +179,15 @@ void* receiveRequest(void *arg) {
 
     leaderBoardText = leaderBoardText + eachRow;
 
-    tempLeaderBoard.push_back(tempwin);
+    // tempLeaderBoard.push_back(tempwin);
   }
 
   cout << leaderBoardText << endl;
 
-  for (int k = 0; k < 3; k++) {
-    leaderBoard.push(tempLeaderBoard.back()); // Take items temporarily in pQueue and put it back in vector;
-    tempLeaderBoard.pop_back();
-  }
+  // for (int k = 0; k < 3; k++) {
+  //   leaderBoard.push(tempLeaderBoard.back()); // Take items temporarily in pQueue and put it back in vector;
+  //   tempLeaderBoard.pop_back();
+  // }
 
   sem_post(&leaderBoardLock);
 
