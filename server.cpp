@@ -172,10 +172,15 @@ void* receiveRequest(void *arg) {
   // win2 = leaderBoard.top();
   string leaderBoardText = string("Leader board:\n");
 
-  for (int j = 1; j < 4; j++) {
+  int topThree = 4; // Iterate through the first 3 in Pqueue or the number of values in Pqueue
+  if (leaderBoard.size() < 3) {
+    topThree = leaderBoard.size();
+  }
+
+  for (int j = 0; j < topThree; j++) {
     Winner tempwin = leaderBoard.top();
     leaderBoard.pop();
-    string eachRow = string(to_string(j)) + string(". ") + string(tempwin.name) + string(" ") + string(to_string(tempwin.turns)) + string("\n\n");
+    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin.name) + string(" ") + string(to_string(tempwin.turns)) + string("\n\n");
 
     leaderBoardText = leaderBoardText + eachRow;
 
@@ -184,7 +189,7 @@ void* receiveRequest(void *arg) {
 
   cout << leaderBoardText << endl;
 
-  // for (int k = 0; k < 3; k++) {
+  // for (int k = 1; k < topThree; k++) {
   //   leaderBoard.push(tempLeaderBoard.back()); // Take items temporarily in pQueue and put it back in vector;
   //   tempLeaderBoard.pop_back();
   // }
