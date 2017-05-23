@@ -161,8 +161,9 @@ void* receiveRequest(void *arg) {
 
   string leaderBoardText;
 
-  int topThree = 4; // Iterate through the first 3 in Pqueue or the number of values in Pqueue
+  int topThree = 3; // Iterate through the first 3 in Pqueue or the number of values in Pqueue
   if (leaderBoard->size() < 3) {
+    cout << "LEADER BOARD SIZE" << leaderBoard->size() << endl;
     topThree = leaderBoard->size();
   }
 
