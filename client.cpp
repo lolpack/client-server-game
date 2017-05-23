@@ -140,16 +140,16 @@ int main(int argc, char** argv) {
     }
   }
 
-  // unsigned short turns = htons(short(turn));
-  // cout << "Turns " << turns << "length" << to_string(turns).length() <<endl;
-  // send(to_string(turns), socket, 5);
+  unsigned short turns = htons(short(turn));
+  cout << "Turns " << turns << "length" << to_string(turns).length() <<endl;
+  send(to_string(turns), socket, 5);
 
   // string leaderBoardLength = read(6, socket); // Initial request to know how big name is;
   // int boardLength = short(ntohs(stol(leaderBoardLength)));
 
   // send(string("AWK"), socket, 3); // Awk request
 
-  string leaderBoard = read(501, socket);
+  string leaderBoard = read(501 , socket);
   replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n');
   cout << "Leader board:\n";
   cout << leaderBoard << endl;
