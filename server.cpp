@@ -204,7 +204,7 @@ void* receiveRequest(void *arg) {
 
   read(4, localSockNum); // Wait for AWK
 
-  send(leaderBoardText, localSockNum, leaderBoardLength);
+  send(leaderBoardText, localSockNum, leaderBoardText.length());
   sem_post(&maxConcurrent);
 }
 
