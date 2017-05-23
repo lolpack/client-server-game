@@ -139,7 +139,7 @@ void* receiveRequest(void *arg) {
     send(to_string(sendiff), localSockNum, 5);
 
     if (sendiff == 0) {
-      correct = false;
+      correct = true;
     }
     // sem_wait(&recSend);
   }
@@ -168,6 +168,8 @@ void* receiveRequest(void *arg) {
 
   cout << win.name << endl;
   cout << win2.name << endl;
+
+  send(string("AWK"), localSockNum, 3);
 
   // close(localSockNum);
 }
