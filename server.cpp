@@ -169,7 +169,7 @@ void* receiveRequest(void *arg) {
   cout << win.name << endl;
   cout << win2.name << endl;
 
-  close(localSockNum);
+  // close(localSockNum);
 }
 
 int main (int argc, char** argv) {

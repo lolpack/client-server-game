@@ -143,6 +143,6 @@ int main(int argc, char** argv) {
   cout << "Turns " << turns << "length" << to_string(turns).length() <<endl;
   send(to_string(turns), socket, 5);
 
-  close(socket);
+  // close(socket);
 
 }
