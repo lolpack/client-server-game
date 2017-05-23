@@ -152,8 +152,9 @@ int main(int argc, char** argv) {
   string leaderBoard = read(501 , socket);
   replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n');
   leaderBoard.erase(0, leaderBoard.find_first_not_of('0'));
+  string trimmed = remove_leading(leaderBoard, '0');
   cout << "Leader board:\n";
-  cout << leaderBoard << endl;
+  cout << trimmed << endl;
 
   close(socket);
 }
