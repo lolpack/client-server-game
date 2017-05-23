@@ -177,7 +177,7 @@ void* receiveRequest(void *arg) {
     leaderBoard.pop();
     string eachRow = string(to_string(j)) + string(". ") + string(tempwin.name) + string(" ") + string(to_string(tempwin.turns)) + string("\n\n");
 
-    leaderBoard = leaderBoard + eachRow;
+    leaderBoardText = leaderBoardText + eachRow;
 
     tempLeaderBoard.push_back(tempwin);
   }
