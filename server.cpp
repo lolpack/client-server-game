@@ -169,7 +169,7 @@ void* receiveRequest(void *arg) {
 
   for (int j = 0; j < topThree; j++) {
     Winner tempwin = leaderBoard->top();
-    // leaderBoard->pop();
+    leaderBoard->pop();
     string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin.name) + string(" ") + string(to_string(tempwin.turns)) + string("&&");
 
     leaderBoardText = leaderBoardText + eachRow;
