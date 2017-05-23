@@ -19,16 +19,16 @@ const int UNISIGNED_SHORT_LENGTH = 5;
 template <typename T_STR, typename T_CHAR>
 T_STR remove_leading(T_STR const & str, T_CHAR c)
 {
-    auto end = str.end();
+  auto end = str.end();
 
-    for (auto i = str.begin(); i != end; ++i) {
-        if (*i != c) {
-            return T_STR(i, end);
-        }
-    }
+  for (auto i = str.begin(); i != end; ++i) {
+      if (*i != c) {
+          return T_STR(i, end);
+      }
+  }
 
-    // All characters were leading or the string is empty.
-    return T_STR();
+  // All characters were leading or the string is empty.
+  return T_STR();
 }
 
 void send(string msgStr, int sock, int size) {
@@ -166,10 +166,10 @@ int main(int argc, char** argv) {
 
   string leaderBoard = read(501 , socket);
   replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n');
-  leaderBoard.erase(0, leaderBoard.find_first_not_of('0'));
-  string trimmed = remove_leading(leaderBoard, '0');
+
+  string leaderBoardSans0 = remove_leading(leaderBoard, '0');
   cout << "Leader board:\n";
-  cout << trimmed << endl;
+  cout << leaderBoardSans0 << endl;
 
   close(socket);
 }

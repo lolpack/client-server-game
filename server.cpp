@@ -151,10 +151,6 @@ void* receiveRequest(void *arg) {
   cout << "TURNS " << turns << endl;
 
   Winner winner;
-  Winner winner2;
-
-  winner2.name = string("TEst");
-  winner2.turns = 100000;
 
   winner.name = name;
   winner.turns = turns;
@@ -162,13 +158,7 @@ void* receiveRequest(void *arg) {
   sem_wait(&leaderBoardLock);
 
   leaderBoard.push(winner);
-  leaderBoard.push(winner2);
 
-  // Winner win;
-  // win = leaderBoard.top();
-  // leaderBoard.pop();
-  // Winner win2;
-  // win2 = leaderBoard.top();
   string leaderBoardText;
 
   int topThree = 4; // Iterate through the first 3 in Pqueue or the number of values in Pqueue
