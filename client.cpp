@@ -140,7 +140,7 @@ int main(int argc, char** argv) {
 
     unsigned short guess = htons(short(playerGuess));
     cout << "GUESS " << guess << "length" << to_string(guess).length() <<endl;
-    send(to_string(guess), socket, 5);
+    send(to_string(guess), socket, 100);
 
     string resultOfGuess = read(5, socket); // Wait for AWK
     int result = short(ntohs(stol(resultOfGuess)));

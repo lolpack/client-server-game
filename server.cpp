@@ -122,7 +122,7 @@ void* receiveRequest(void *arg) {
   bool correct = false;
 
   while (!correct) {
-    string guessString = read(6, localSockNum);
+    string guessString = read(101, localSockNum);
 
     cout << "GUESS STRING " << guessString << endl;
     int guess = short(ntohs(stol(guessString)));
