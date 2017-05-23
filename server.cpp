@@ -14,6 +14,7 @@
 #include <ctime>
 #include <queue>
 #include <vector>
+#include <algorithm>
 
 // Port range 11,700 - 11,799
 
@@ -27,7 +28,7 @@ struct Winner {
 struct compareWinners {
   bool operator()(const Winner& l, const Winner& r) const
   {
-    return l.turns < r.turns;
+    return l.turns > r.turns; // Compare two winners turns. Least number of turns wins.
   }
 };
 
@@ -59,7 +60,7 @@ void send(string msgStr, int sock, int size) {
   }
 }
 
-string read(int messageSizeBytes, int socket, sem_t &recSend) {
+string read(int messageSizeBytes, int socket) {
   int bytesLeft = messageSizeBytes; // bytes to read
   char buffer[messageSizeBytes]; // initially empty
   char *bp = buffer; //initially point at the first element
@@ -74,7 +75,6 @@ string read(int messageSizeBytes, int socket, sem_t &recSend) {
   }
   cout << "MESSAGE RECEIVED" << endl;
   cout << buffer << endl;
-  sem_post(&recSend);
 
   return string(buffer);
 }
@@ -101,7 +101,7 @@ void* receiveRequest(void *arg) {
 
   sem_t recSend;
   sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
-  string clientNameLength = read(6, localSockNum, recSend); // Initial request to know how big name is;
+  string clientNameLength = read(6, localSockNum); // Initial request to know how big name is;
 
   send(string("AWK"), localSockNum, 3); // Awk request
 
@@ -113,7 +113,7 @@ void* receiveRequest(void *arg) {
 
   cout << "length of name: " << nameLength << endl;
 
-  string name = read(nameLength, localSockNum, recSend);
+  string name = read(nameLength, localSockNum);
 
   cout << "NAME: " << name << endl;
   // unsigned short nameLength = htons(short(localSockNum));
@@ -123,7 +123,7 @@ void* receiveRequest(void *arg) {
   bool correct = false;
 
   while (!correct) {
-    string guessString = read(6, localSockNum, recSend);
+    string guessString = read(6, localSockNum);
 
     cout << "GUESS STRING " << guessString << endl;
     int guess = short(ntohs(stol(guessString)));
@@ -146,7 +146,7 @@ void* receiveRequest(void *arg) {
     // sem_wait(&recSend);
   }
 
-  string turnsResponse = read(6, localSockNum, recSend);
+  string turnsResponse = read(6, localSockNum);
 
   int turns = short(ntohs(stol(turnsResponse)));
   cout << "TURNS " << turns << endl;
@@ -170,7 +170,7 @@ void* receiveRequest(void *arg) {
   // leaderBoard.pop();
   // Winner win2;
   // win2 = leaderBoard.top();
-  string leaderBoardText = string("Leader board:\n");
+  string leaderBoardText;
 
   int topThree = 4; // Iterate through the first 3 in Pqueue or the number of values in Pqueue
   if (leaderBoard.size() < 3) {
@@ -180,29 +180,32 @@ void* receiveRequest(void *arg) {
   for (int j = 0; j < topThree; j++) {
     Winner tempwin = leaderBoard.top();
     leaderBoard.pop();
-    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin.name) + string(" ") + string(to_string(tempwin.turns)) + string("\n\n");
+    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin.name) + string(" ") + string(to_string(tempwin.turns)) + string("&&");
 
     leaderBoardText = leaderBoardText + eachRow;
 
-    // tempLeaderBoard.push_back(tempwin);
+    tempLeaderBoard.push_back(tempwin);
   }
 
   cout << leaderBoardText << endl;
 
-  // for (int k = 1; k < topThree; k++) {
-  //   leaderBoard.push(tempLeaderBoard.back()); // Take items temporarily in pQueue and put it back in vector;
-  //   tempLeaderBoard.pop_back();
-  // }
+  for (int k = 1; k < topThree; k++) {
+    leaderBoard.push(tempLeaderBoard.back()); // Take items temporarily in pQueue and put it back in vector;
+    tempLeaderBoard.pop_back();
+  }
 
   sem_post(&leaderBoardLock);
 
-  // cout << win.name << endl;
-  // cout << win2.name << endl;
+  unsigned short leaderBoardLength = htons(short(leaderBoardText.length()));
+  cout << to_string(leaderBoardLength).length();
+  cout << "LeaderBoard LENGTH " << leaderBoardLength << endl;
+  cout << "LeaderBoard LENGTH String " << to_string(leaderBoardLength) << endl;
 
-  send(string("AWK"), localSockNum, 3);
+  send(to_string(leaderBoardLength), localSockNum, 5); // Send name length before name so server know how long it should be
 
-  // close(localSockNum);
+  read(4, localSockNum); // Wait for AWK
 
+  send(leaderBoardText, localSockNum, leaderBoardLength);
   sem_post(&maxConcurrent);
 }
 

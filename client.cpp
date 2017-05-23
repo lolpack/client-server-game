@@ -139,12 +139,19 @@ int main(int argc, char** argv) {
     }
   }
 
-  unsigned short turns = htons(short(playerGuess));
+  unsigned short turns = htons(short(turn));
   cout << "Turns " << turns << "length" << to_string(turns).length() <<endl;
   send(to_string(turns), socket, 5);
 
-  read(4, socket); // Wait for AWK
+  string leaderBoardLength = read(6, socket); // Initial request to know how big name is;
+  int boardLength = short(ntohs(stol(leaderBoardLength)));
 
-  // close(socket);
+  send(string("AWK"), socket, 3); // Awk request
 
+  string leaderBoard = read(boardLength, socket);
+  replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n');
+  cout << "Leader board:\n";
+  cout << leaderBoard << endl;
+
+  close(socket);
 }
