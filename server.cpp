@@ -195,16 +195,16 @@ void* receiveRequest(void *arg) {
 
   sem_post(&leaderBoardLock);
 
-  unsigned short leaderBoardLength = htons(short(leaderBoardText.length()));
-  cout << to_string(leaderBoardLength).length();
-  cout << "LeaderBoard LENGTH " << leaderBoardLength << endl;
-  cout << "LeaderBoard LENGTH String " << to_string(leaderBoardLength) << endl;
+  // unsigned short leaderBoardLength = htons(short(leaderBoardText.length()));
+  // cout << to_string(leaderBoardLength).length();
+  // cout << "LeaderBoard LENGTH " << leaderBoardLength << endl;
+  // cout << "LeaderBoard LENGTH String " << to_string(leaderBoardLength) << endl;
 
-  send(to_string(leaderBoardLength), localSockNum, 5); // Send name length before name so server know how long it should be
+  // send(to_string(leaderBoardLength), localSockNum, 5); // Send name length before name so server know how long it should be
 
-  read(4, localSockNum); // Wait for AWK
+  // read(4, localSockNum); // Wait for AWK
 
-  send(leaderBoardText, localSockNum, leaderBoardText.length());
+  send(leaderBoardText, localSockNum, 500);
   sem_post(&maxConcurrent);
 }
 
