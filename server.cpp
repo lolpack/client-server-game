@@ -32,8 +32,10 @@ struct compareWinners {
 };
 
 priority_queue<Winner, vector<Winner>, compareWinners> leaderBoard;
+vector<Winner> tempLeaderBoard;
 
 sem_t maxConcurrent;
+sem_t leaderBoardLock;
 int MAX_CONCURRENT_USERS = 10;
 
 void send(string msgStr, int sock, int size) {
@@ -158,20 +160,43 @@ void* receiveRequest(void *arg) {
   winner.name = name;
   winner.turns = turns;
 
+  sem_wait(&leaderBoardLock);
+
   leaderBoard.push(winner);
   leaderBoard.push(winner2);
 
-  Winner win;
-  win = leaderBoard.top();
-  Winner win2;
-  win2 = leaderBoard.top();
+  // Winner win;
+  // win = leaderBoard.top();
+  // leaderBoard.pop();
+  // Winner win2;
+  // win2 = leaderBoard.top();
 
-  cout << win.name << endl;
-  cout << win2.name << endl;
+  string leaderBoardText = string("Leader board:\n");
+
+  for (int j = 1; j < 4; j++) {
+    Winner tempwin = leaderBoard.top();
+    leaderBoard.pop();
+    leaderBoardText + string(to_string(j)) + string(". ") + string(tempwin.name) + string(" ") + string(to_string(tempwin.turns)) + string("\n\n");
+
+    cout << leaderBoardText << endl;
+    tempLeaderBoard.push_back(tempwin);
+  }
+
+  for (int j = 0; j < 3; j++) {
+    leaderBoard.push(tempLeaderBoard.back()); // Take items temporarily in pQueue and put it back in vector;
+    tempLeaderBoard.pop_back();
+  }
+
+  sem_post(&leaderBoardLock);
+
+  // cout << win.name << endl;
+  // cout << win2.name << endl;
 
   send(string("AWK"), localSockNum, 3);
 
   // close(localSockNum);
+
+  sem_post(&maxConcurrent);
 }
 
 int main (int argc, char** argv) {
@@ -206,10 +231,10 @@ int main (int argc, char** argv) {
   struct sockaddr_in clientAddr;
   socklen_t addrLen = sizeof(clientAddr);
   sem_init(&maxConcurrent, 0, MAX_CONCURRENT_USERS); // Only allow 10 users at once.
-  int threadNumber = 0;
+  sem_init(&leaderBoardLock, 0, 1);
 
-  while (threadNumber < 10) { // Continually run request acceptor.
-    // sem_wait(&maxConcurrent); // Wait for available processor before accepting request.
+  while (true) { // Continually run request acceptor.
+    sem_wait(&maxConcurrent); // Wait for available processor before accepting request.
 
     int newSock = accept(sock,(struct sockaddr *) &clientAddr, &addrLen);
     if (newSock < 0) {
@@ -220,7 +245,5 @@ int main (int argc, char** argv) {
       pthread_create(&clientThread, NULL, &receiveRequest, (void*) new int(newSock));
       pthread_detach(clientThread);
     }
-
-    threadNumber ++;
   }
 }
