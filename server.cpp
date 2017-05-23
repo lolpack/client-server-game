@@ -12,10 +12,26 @@
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
+#include <queue>
+#include <vector>
 
 // Port range 11,700 - 11,799
 
 using namespace std;
+
+struct Winner {
+  string name;
+  int turns;
+};
+
+struct compareWinners {
+  bool operator()(const Winner& l, const Winner& r) const
+  {
+    return l.turns < r.turns;
+  }
+};
+
+priority_queue<Winner, vector<Winner>, compareWinners> leaderBoard;
 
 sem_t maxConcurrent;
 int MAX_CONCURRENT_USERS = 10;
@@ -132,6 +148,26 @@ void* receiveRequest(void *arg) {
 
   cout << "TURNS " << turnsResponse << endl;
   int turns = short(ntohs(stol(turnsResponse)));
+
+  Winner winner;
+  Winner winner2;
+
+  winner2.name = string("TEst");
+  winner2.turns = 100000;
+
+  winner.name = name;
+  winner.turns = turns;
+
+  leaderBoard.push(winner);
+  leaderBoard.push(winner2);
+
+  Winner win;
+  win = leaderBoard.top();
+  Winner win2;
+  win2 = leaderBoard.top();
+
+  cout << win.name << endl;
+  cout << win2.name << endl;
 
   close(localSockNum);
 }
