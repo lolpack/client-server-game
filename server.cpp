@@ -128,10 +128,10 @@ void* receiveRequest(void *arg) {
     // sem_wait(&recSend);
   }
 
-  string turns = read(6, localSockNum, recSend);
+  string turnsResponse = read(6, localSockNum, recSend);
 
-  cout << "TURNS " << turns << endl;
-  int turns = short(ntohs(stol(turns)));
+  cout << "TURNS " << turnsResponse << endl;
+  int turns = short(ntohs(stol(turnsResponse)));
 
   close(localSockNum);
 }
