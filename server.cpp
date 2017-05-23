@@ -182,7 +182,7 @@ void* receiveRequest(void *arg) {
 
   cout << leaderBoardText << endl;
 
-  for (int k = 1; k < topThree; k++) {
+  for (int k = 0; k < topThree; k++) {
     Winner winl = tempLeaderBoard.back();
     cout << "WINL " << winl.name << winl.turns << endl;
     leaderBoard->push(winl); // Take items temporarily in pQueue and put it back in vector;
