@@ -168,13 +168,16 @@ void* receiveRequest(void *arg) {
   }
 
   for (int j = 0; j < topThree; j++) {
-    Winner tempwin = leaderBoard->top();
+    Winner *tempwin = new Winner;
+    tempwin->name = leaderBoard->top().name;
+    tempwin->turns = leaderBoard->top().turns;
     leaderBoard->pop();
-    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin.name) + string(" ") + string(to_string(tempwin.turns)) + string("&&");
+    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin->name) + string(" ") + string(to_string(tempwin->turns)) + string("&&");
 
     leaderBoardText = leaderBoardText + eachRow;
 
-    tempLeaderBoard.push_back(tempwin);
+    tempLeaderBoard.push_back((*tempwin));
+    delete tempwin;
   }
 
   cout << leaderBoardText << endl;
