@@ -16,6 +16,21 @@ using namespace std;
 
 const int UNISIGNED_SHORT_LENGTH = 5;
 
+template <typename T_STR, typename T_CHAR>
+T_STR remove_leading(T_STR const & str, T_CHAR c)
+{
+    auto end = str.end();
+
+    for (auto i = str.begin(); i != end; ++i) {
+        if (*i != c) {
+            return T_STR(i, end);
+        }
+    }
+
+    // All characters were leading or the string is empty.
+    return T_STR();
+}
+
 void send(string msgStr, int sock, int size) {
   string newString = string(size - msgStr.length(), '0') + msgStr;
 
