@@ -130,33 +130,33 @@ int main(int argc, char** argv) {
   while (!correct) {
     cout << "Turn: " << turn << endl;
     cout << "Enter a guess: ";
-    cin >> playerGuess;
 
-    unsigned short guess = htons(short(playerGuess));
-    cout << "GUESS " << guess << "length" << to_string(guess).length() <<endl;
-    send(to_string(guess), socket, 100);
-
-    string resultOfGuess = read(101, socket); // Wait for AWK
-    int result = short(ntohs(stol(resultOfGuess)));
-
-    cout << "Result of guess: " << result << endl;
-
-    if (result == 0) {
-      cout << "Congratulations! It took " << turn << " turns to guess the number!"  << endl;
-      correct = true;
+    if (playerGuess > 9999 ||  playerGuess < 0) {
+      cout << "Guesses must be a number between 0 and 9999!" << endl;
     } else {
-      turn++;
+      unsigned short guess = htons(short(playerGuess));
+      cout << "GUESS " << guess << "length" << to_string(guess).length() <<endl;
+      send(to_string(guess), socket, 100);
+
+      string resultOfGuess = read(101, socket); // Wait for AWK
+      int result = short(ntohs(stol(resultOfGuess)));
+
+      cout << "Result of guess: " << result << endl;
+
+      if (result == 0) {
+        cout << "Congratulations! It took " << turn << " turns to guess the number!"  << endl;
+        correct = true;
+      } else {
+        turn++;
+      }
     }
+
+    cin.clear();
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
 
   unsigned short turns = htons(short(turn));
-  cout << "Turns " << turns << "length" << to_string(turns).length() <<endl;
   send(to_string(turns), socket, 100);
-
-  // string leaderBoardLength = read(6, socket); // Initial request to know how big name is;
-  // int boardLength = short(ntohs(stol(leaderBoardLength)));
-
-  // send(string("AWK"), socket, 3); // Awk request
 
   string leaderBoard = read(501 , socket);
   replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n');
