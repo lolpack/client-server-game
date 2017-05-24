@@ -43,8 +43,6 @@ void send(string msgStr, int sock, int size) {
   strcpy(msg, newString.c_str());
   msg[size - 1] = '\n'; // Always end message with terminal char
 
-  cout << "FINAL SIZE " << size << endl;
-  cout << "MESSAGE " << msg << endl;
   int bytesSent = send(sock, (void *) msg, size, 0);
   if (bytesSent != size) {
     cerr << "TRANSMISSION ERROR" << endl;
@@ -52,7 +50,7 @@ void send(string msgStr, int sock, int size) {
   }
 }
 
-string read(int messageSizeBytes, int socket) {//, sem_t &recSend) {
+string read(int messageSizeBytes, int socket) {
   cout << "RECEIVING TRANSMISSION NOW" << endl;
   int bytesLeft = messageSizeBytes; // bytes to read
   char buffer[messageSizeBytes]; // initially empty
@@ -63,13 +61,9 @@ string read(int messageSizeBytes, int socket) {//, sem_t &recSend) {
       cerr << "Error receiving message" << endl;
       exit(-1);
     }
-    cout << bytesLeft << "BYSTES LEFT" << buffer << "BUFFER SO FAR" << endl;
     bytesLeft = bytesLeft - bytesRecv;
     bp = bp + bytesRecv;
   }
-  cout << "MESSAGE RECEIVED" << endl;
-  cout << buffer << endl;
-  // sem_post(&recSend);
 
   return string(buffer);
 }
