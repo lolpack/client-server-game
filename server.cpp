@@ -40,11 +40,7 @@ int MAX_CONCURRENT_USERS = 10;
 
 void send(string msgStr, int sock, int size) {
   string newString = string(size - msgStr.length(), '0') + msgStr;
-  cout << "This code is hit!" << endl;
-  if (newString.length() > size) {
-    cerr << "TOO LONG!" << endl;
-    exit(-1); // too long
-  }
+
   size++;
   char msg[size];
   strcpy(msg, newString.c_str());
@@ -53,7 +49,7 @@ void send(string msgStr, int sock, int size) {
   int bytesSent = send(sock, (void *) msg, size, 0);
   if (bytesSent != size) {
     cerr << "TRANSMISSION ERROR" << endl;
-    exit(-1);
+    return;
   }
 }
 
@@ -65,21 +61,16 @@ string read(int messageSizeBytes, int socket) {
     int bytesRecv = recv(socket, (void *)bp, bytesLeft, 0);
     if (bytesRecv <= 0) {
       cerr << "Error receiving message" << endl;
-      exit(-1);
     }
     bytesLeft = bytesLeft - bytesRecv;
     bp = bp + bytesRecv;
   }
-  cout << "MESSAGE RECEIVED" << endl;
-  cout << buffer << endl;
 
   return string(buffer);
 }
 
 int calculateDifference(int guess, int randomNumber) {
   int diff = guess - randomNumber;
-  cout << "THE DIFFERENCE " << diff << endl;
-  cout << "THE ABS DIFFERENCE" << abs(diff) << endl;
 
   int absDiff = abs(diff);
   int sum = 0;
@@ -88,7 +79,7 @@ int calculateDifference(int guess, int randomNumber) {
       sum += absDiff % 10;
       absDiff /= 10;
   }
-  cout << "ABS DIFF" << sum << endl;
+
   return sum;
 }
 
@@ -100,20 +91,14 @@ void* receiveRequest(void *arg) {
   sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
   string clientNameLength = read(6, localSockNum); // Initial request to know how big name is;
 
-  send(string("AWK"), localSockNum, 3); // Awk request
+  send(string("AWK"), localSockNum, 3); // Awk that length is received.
 
   int randomNumber = rand() % 10000; // rand() return a number between ​0​ and 9999;
 
-  cout << "RANDOM NUMBER " << randomNumber;;
-
   int nameLength = short(ntohs(stol(clientNameLength)));
-
-  cout << "length of name: " << nameLength << endl;
-
   string name = read(nameLength, localSockNum);
 
-  cout << "NAME: " << name << endl;
-  // unsigned short nameLength = htons(short(localSockNum));
+  cout << "Random number generated for " << name << ": " << randomNumber;
 
   send(string("AWK"), localSockNum, 3);
 
@@ -121,15 +106,7 @@ void* receiveRequest(void *arg) {
 
   while (!correct) {
     string guessString = read(101, localSockNum);
-
-    cout << "GUESS STRING " << guessString << endl;
     int guess = short(ntohs(stol(guessString)));
-
-    cout << "SHORT " << short(ntohs(stol(guessString))) << endl;
-    cout << "NTOHS " << ntohs(stol(guessString)) << endl;
-    cout << "STOL " << stol(guessString) << endl;
-
-    cout << "GUESS " << guess << endl;
 
     int diff = calculateDifference(guess, randomNumber);
 
@@ -140,16 +117,12 @@ void* receiveRequest(void *arg) {
     if (sendiff == 0) {
       correct = true;
     }
-    // sem_wait(&recSend);
   }
 
   string turnsResponse = read(101, localSockNum);
-
   int turns = short(ntohs(stol(turnsResponse)));
-  cout << "TURNS " << turns << endl;
 
   Winner winner;
-
   winner.name = name;
   winner.turns = turns;
 
@@ -157,13 +130,12 @@ void* receiveRequest(void *arg) {
 
   leaderBoard->push(winner);
 
-  string leaderBoardText;
-
   int topThree = 3; // Iterate through the first 3 in Pqueue or the number of values in Pqueue
-  cout << "LEADER BOARD SIZE" << leaderBoard->size() << endl;
   if (leaderBoard->size() < 3) {
     topThree = leaderBoard->size();
   }
+
+  string leaderBoardText;
 
   for (int j = 0; j < topThree; j++) {
     Winner *tempwin = new Winner;
@@ -182,23 +154,11 @@ void* receiveRequest(void *arg) {
 
   for (int k = 0; k < topThree; k++) {
     Winner winl = tempLeaderBoard.back();
-    cout << "WINL " << winl.name << winl.turns << endl;
     leaderBoard->push(winl); // Take items temporarily in pQueue and put it back in vector;
     tempLeaderBoard.pop_back();
   }
 
-  cout << "LEADER BOARD SIZE" << leaderBoard->size() << endl;
-
   sem_post(&leaderBoardLock);
-
-  // unsigned short leaderBoardLength = htons(short(leaderBoardText.length()));
-  // cout << to_string(leaderBoardLength).length();
-  // cout << "LeaderBoard LENGTH " << leaderBoardLength << endl;
-  // cout << "LeaderBoard LENGTH String " << to_string(leaderBoardLength) << endl;
-
-  // send(to_string(leaderBoardLength), localSockNum, 5); // Send name length before name so server know how long it should be
-
-  // read(4, localSockNum); // Wait for AWK
 
   send(leaderBoardText, localSockNum, 500);
   sem_post(&maxConcurrent);
