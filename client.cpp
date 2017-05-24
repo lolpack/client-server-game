@@ -150,9 +150,6 @@ int main(int argc, char** argv) {
         turn++;
       }
     }
-
-    cin.clear();
-    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
 
   unsigned short turns = htons(short(turn));
