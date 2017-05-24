@@ -137,7 +137,7 @@ void* receiveRequest(void *arg) {
 
     unsigned short sendiff = htons(short(diff));
     cout << "Diff:  " << sendiff << "length" << to_string(sendiff).length() << endl;
-    send(to_string(sendiff), localSockNum, 5);
+    send(to_string(sendiff), localSockNum, 100);
 
     if (sendiff == 0) {
       correct = true;
@@ -145,7 +145,7 @@ void* receiveRequest(void *arg) {
     // sem_wait(&recSend);
   }
 
-  string turnsResponse = read(6, localSockNum);
+  string turnsResponse = read(101, localSockNum);
 
   int turns = short(ntohs(stol(turnsResponse)));
   cout << "TURNS " << turns << endl;
