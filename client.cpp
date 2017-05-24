@@ -95,6 +95,16 @@ int getSocket(char *IPAddr, unsigned short servPort) {
   return sock;
 }
 
+int getInput() {
+  int i;
+  if ( cin>>i )
+    return i;
+  else
+    cin.clear();
+    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    return 100000; // Something intentionally out of range.
+}
+
 int main(int argc, char** argv) {
   if (argc < 3) {
     cerr << "CLIENT MUST BE STARTED WITH IP and PORT" << endl;
@@ -131,6 +141,7 @@ int main(int argc, char** argv) {
     cout << "Turn: " << turn << endl;
     cout << "Enter a guess: ";
 
+    playerGuess = getInput();
     if (playerGuess > 9999 ||  playerGuess < 0) {
       cout << "Guesses must be a number between 0 and 9999!" << endl;
     } else {
