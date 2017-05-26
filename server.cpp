@@ -61,6 +61,7 @@ string read(int messageSizeBytes, int socket) {
     int bytesRecv = recv(socket, (void *)bp, bytesLeft, 0);
     if (bytesRecv <= 0) {
       cerr << "Error receiving message" << endl;
+      return string("BAD MESSAGE");
     }
     bytesLeft = bytesLeft - bytesRecv;
     bp = bp + bytesRecv;
@@ -73,6 +74,8 @@ int calculateDifference(int guess, int randomNumber) {
   int diff = guess - randomNumber;
 
   int absDiff = abs(diff);
+
+  cout << "absDiff" << absDiff << endl;
   int sum = 0;
   // Pull off highest order number and add it to itself
   for (int i = to_string(absDiff).length(); i >= 0; i--) {
@@ -91,12 +94,24 @@ void* receiveRequest(void *arg) {
   sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
   string clientNameLength = read(6, localSockNum); // Initial request to know how big name is;
 
+  if (clientNameLength == string("BAD MESSAGE")) { // Safely return thread if response is unreadable.
+    sem_post(&leaderBoardLock);
+    close(localSockNum);
+    return (void*) localSockNum;
+  }
+
   send(string("AWK"), localSockNum, 3); // Awk that length is received.
 
   int randomNumber = rand() % 10000; // rand() return a number between ​0​ and 9999;
 
   int nameLength = short(ntohs(stol(clientNameLength)));
   string name = read(nameLength, localSockNum);
+
+  if (name == string("BAD MESSAGE")) {
+    sem_post(&leaderBoardLock);
+    close(localSockNum);
+    return (void*) localSockNum;
+  }
 
   cout << "Random number generated for " << name << ": " << randomNumber;
 
@@ -106,12 +121,18 @@ void* receiveRequest(void *arg) {
 
   while (!correct) {
     string guessString = read(101, localSockNum);
+
+    if (guessString == string("BAD MESSAGE")) {
+      sem_post(&leaderBoardLock);
+      close(localSockNum);
+      return (void*) localSockNum;
+    }
+
     int guess = short(ntohs(stol(guessString)));
 
     int diff = calculateDifference(guess, randomNumber);
 
     unsigned short sendiff = htons(short(diff));
-    cout << "Diff:  " << sendiff << "length" << to_string(sendiff).length() << endl;
     send(to_string(sendiff), localSockNum, 100);
 
     if (sendiff == 0) {
@@ -120,6 +141,13 @@ void* receiveRequest(void *arg) {
   }
 
   string turnsResponse = read(101, localSockNum);
+
+  if (turnsResponse == string("BAD MESSAGE")) {
+    sem_post(&leaderBoardLock);
+    close(localSockNum);
+    return (void*) localSockNum;
+  }
+
   int turns = short(ntohs(stol(turnsResponse)));
 
   Winner winner;
@@ -142,15 +170,13 @@ void* receiveRequest(void *arg) {
     tempwin->name = leaderBoard->top().name;
     tempwin->turns = leaderBoard->top().turns;
     leaderBoard->pop();
-    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin->name) + string(" ") + string(to_string(tempwin->turns)) + string("&&");
+    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin->name) + string(" ") + string(to_string(tempwin->turns)) + string("&&"); // Use delimiter so to replace carriage return
 
     leaderBoardText = leaderBoardText + eachRow;
 
     tempLeaderBoard.push_back((*tempwin));
     delete tempwin;
   }
-
-  cout << leaderBoardText << endl;
 
   for (int k = 0; k < topThree; k++) {
     Winner winl = tempLeaderBoard.back();
@@ -161,6 +187,7 @@ void* receiveRequest(void *arg) {
   sem_post(&leaderBoardLock);
 
   send(leaderBoardText, localSockNum, 500);
+  close(localSockNum);
   sem_post(&maxConcurrent);
 }
 

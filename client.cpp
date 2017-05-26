@@ -120,7 +120,6 @@ int main(int argc, char** argv) {
   int socket = getSocket(IPAddr, servPort);
 
   unsigned short nameLength = htons(short(playerName.length()));
-  cout << to_string(nameLength).length();
 
   send(to_string(nameLength), socket, 5); // Send name length before name so server know how long it should be
   read(4, socket); // Wait for AWK
