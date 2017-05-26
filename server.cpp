@@ -104,7 +104,6 @@ void* receiveRequest(void *arg) {
   send(string("AWK"), localSockNum, 3); // Awk that length is received.
 
   int randomNumber = rand() % 10000; // rand() return a number between ​0​ and 9999;
-  cout << "Random number generated for: " << randomNumber;
 
   int nameLength = short(ntohs(stol(clientNameLength)));
   string name = read(nameLength, localSockNum);
@@ -115,11 +114,14 @@ void* receiveRequest(void *arg) {
     return (void*) z;
   }
 
+  cout << "Random number generated for " << name << ": " << randomNumber;
+
   send(string("AWK"), localSockNum, 3);
 
   bool correct = false;
 
   while (!correct) {
+    cout << "";
     string guessString = read(101, localSockNum);
 
     if (guessString == string("BAD MESSAGE")) {
@@ -186,7 +188,7 @@ void* receiveRequest(void *arg) {
 
   sem_post(&leaderBoardLock);
 
-  send(leaderBoardText, localSockNum, 1000);
+  send(leaderBoardText, localSockNum, 100000);
   close(localSockNum);
   sem_post(&maxConcurrent);
 }
