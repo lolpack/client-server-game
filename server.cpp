@@ -188,7 +188,7 @@ void* receiveRequest(void *arg) {
 
   sem_post(&leaderBoardLock);
 
-  send(leaderBoardText, localSockNum, 1000);
+  send(leaderBoardText, localSockNum, 500);
   close(localSockNum);
   sem_post(&maxConcurrent);
 }
