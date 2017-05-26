@@ -74,11 +74,11 @@ int calculateDifference(int guess, int randomNumber) {
   int sum = 0;
   // Pull off highest order number and add it to itself
   for (int i = 4; i >= 0; i--) {
-    int guessMod = % 10;
-    int randoMod = % 10;
+    int guessMod = guess % 10;
+    int randoMod = randomNumber % 10;
 
     cout << "Guess mod " << guessMod << " randoMod " << randoMod << endl;
-    sum += abs(randoMod - guessMod)
+    sum += abs(randoMod - guessMod);
     cout << "abs(randoMod - guessMod)" << abs(randoMod - guessMod);
     cout << "sum " << sum << endl;
     guessMod /= 10;
@@ -92,6 +92,8 @@ void* receiveRequest(void *arg) {
   int localSockNum = *(int*)arg; // Dereference pointer so local copy of sock num is held.
   delete (int*)arg;
 
+  int *z; // Return some value to supress compiler warning;
+
   sem_t recSend;
   sem_init(&recSend, 0, 1); // Need mutex to wait for client and then respond
   string clientNameLength = read(6, localSockNum); // Initial request to know how big name is;
@@ -99,7 +101,7 @@ void* receiveRequest(void *arg) {
   if (clientNameLength == string("BAD MESSAGE")) { // Safely return thread if response is unreadable.
     sem_post(&leaderBoardLock);
     close(localSockNum);
-    return (void*) localSockNum;
+    return (void*) z;
   }
 
   send(string("AWK"), localSockNum, 3); // Awk that length is received.
@@ -112,7 +114,7 @@ void* receiveRequest(void *arg) {
   if (name == string("BAD MESSAGE")) {
     sem_post(&leaderBoardLock);
     close(localSockNum);
-    return (void*) localSockNum;
+    return (void*) z;
   }
 
   cout << "Random number generated for " << name << ": " << randomNumber;
@@ -127,7 +129,7 @@ void* receiveRequest(void *arg) {
     if (guessString == string("BAD MESSAGE")) {
       sem_post(&leaderBoardLock);
       close(localSockNum);
-      return (void*) localSockNum;
+      return (void*) z;
     }
 
     int guess = short(ntohs(stol(guessString)));
@@ -147,7 +149,7 @@ void* receiveRequest(void *arg) {
   if (turnsResponse == string("BAD MESSAGE")) {
     sem_post(&leaderBoardLock);
     close(localSockNum);
-    return (void*) localSockNum;
+    return (void*) z;
   }
 
   int turns = short(ntohs(stol(turnsResponse)));
