@@ -114,7 +114,7 @@ void* receiveRequest(void *arg) {
     return (void*) z;
   }
 
-  cout << "Random number generated for " << name << ": " << randomNumber << endl;
+  cout << "Random number generated for " << name << randomNumber << endl;
   cout.flush(); // Force cout before loop
 
   send(string("AWK"), localSockNum, 3);
@@ -172,7 +172,7 @@ void* receiveRequest(void *arg) {
     tempwin->name = leaderBoard->top().name;
     tempwin->turns = leaderBoard->top().turns;
     leaderBoard->pop();
-    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin->name) + string(" ") + string(to_string(tempwin->turns)) + string("&&"); // Use delimiter so to replace carriage return
+    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin->name) + string(to_string(tempwin->turns)) + string("&&"); // Use delimiter so to replace carriage return
 
     leaderBoardText = leaderBoardText + eachRow;
 

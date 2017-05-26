@@ -117,7 +117,7 @@ int main(int argc, char** argv) {
   cout << "Welcome to Number Guessing Game! Enter your name:  ";
   cin >> playerName;
 
-  playerName += string("  "); // Breathing room
+  playerName += string("  "); // Breathing room: makes printing prettier
   int socket = getSocket(IPAddr, servPort);
 
   unsigned short nameLength = htons(short(playerName.length()));
