@@ -234,8 +234,6 @@ int main (int argc, char** argv) {
     if (newSock < 0) {
       cerr << "Error with incoming message, ignoring request" << endl;
     } else {
-      cout << "Server started and listening on port " << PORT << endl;
-      cout.flush(); // Force cout before loop
       pthread_t clientThread;
 
       pthread_create(&clientThread, NULL, &receiveRequest, (void*) new int(newSock));
