@@ -34,6 +34,9 @@ T_STR remove_leading(T_STR const & str, T_CHAR c)
 void send(string msgStr, int sock, int size) {
   string newString = string(size - msgStr.length(), '0') + msgStr;
 
+  if (newString.length() > size) {
+    exit(-1); // too long
+  }
   size++;
   char msg[size];
   strcpy(msg, newString.c_str());
@@ -42,7 +45,7 @@ void send(string msgStr, int sock, int size) {
   int bytesSent = send(sock, (void *) msg, size, 0);
   if (bytesSent != size) {
     cerr << "TRANSMISSION ERROR" << endl;
-    return;
+    exit(-1);
   }
 }
 
@@ -54,6 +57,7 @@ string read(int messageSizeBytes, int socket) {
     int bytesRecv = recv(socket, (void *)bp, bytesLeft, 0);
     if (bytesRecv <= 0) {
       cerr << "Error receiving message" << endl;
+      exit(-1);
     }
     bytesLeft = bytesLeft - bytesRecv;
     bp = bp + bytesRecv;
@@ -68,10 +72,11 @@ int getSocket(char *IPAddr, unsigned short servPort) {
     cerr << "Error with socket" << endl; exit (-1);
   }
 
+
   // Convert dotted decimal address to int
   unsigned long servIP;
   int status = inet_pton(AF_INET, IPAddr, (void*)&servIP);
-  if (status <= 0) cerr << "Error with host IP"; exit(-1);
+  if (status <= 0) exit(-1);
 
   // Set the fields
   struct sockaddr_in servAddr;
@@ -118,9 +123,10 @@ int main(int argc, char** argv) {
   cout << to_string(nameLength).length();
 
   send(to_string(nameLength), socket, 5); // Send name length before name so server know how long it should be
-
   read(4, socket); // Wait for AWK
+
   send(playerName, socket, playerName.length());
+
   read(4, socket); // Wait for AWK
 
   int playerGuess;
@@ -140,6 +146,8 @@ int main(int argc, char** argv) {
 
       string resultOfGuess = read(101, socket); // Wait for AWK
       int result = short(ntohs(stol(resultOfGuess)));
+
+      cout << "Result of guess: " << result << endl;
 
       if (result == 0) {
         cout << "Congratulations! It took " << turn << " turns to guess the number!"  << endl;
