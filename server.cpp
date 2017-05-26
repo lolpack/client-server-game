@@ -96,7 +96,7 @@ void* receiveRequest(void *arg) {
   string clientNameLength = read(6, localSockNum); // Initial request to know how big name is;
 
   if (clientNameLength == string("BAD MESSAGE")) { // Safely return thread if response is unreadable.
-    sem_post(&leaderBoardLock);
+    sem_post(&maxConcurrent); // Decrement semaphore to let more clients in.
     close(localSockNum);
     return (void*) z;
   }
@@ -109,7 +109,7 @@ void* receiveRequest(void *arg) {
   string name = read(nameLength, localSockNum);
 
   if (name == string("BAD MESSAGE")) {
-    sem_post(&leaderBoardLock);
+    sem_post(&maxConcurrent);
     close(localSockNum);
     return (void*) z;
   }
@@ -125,7 +125,7 @@ void* receiveRequest(void *arg) {
     string guessString = read(101, localSockNum);
 
     if (guessString == string("BAD MESSAGE")) {
-      sem_post(&leaderBoardLock);
+      sem_post(&maxConcurrent);
       close(localSockNum);
       return (void*) z;
     }
@@ -145,7 +145,7 @@ void* receiveRequest(void *arg) {
   string turnsResponse = read(101, localSockNum);
 
   if (turnsResponse == string("BAD MESSAGE")) {
-    sem_post(&leaderBoardLock);
+    sem_post(&maxConcurrent);
     close(localSockNum);
     return (void*) z;
   }
@@ -225,10 +225,10 @@ int main (int argc, char** argv) {
   struct sockaddr_in clientAddr;
   socklen_t addrLen = sizeof(clientAddr);
   sem_init(&maxConcurrent, 0, MAX_CONCURRENT_USERS); // Only allow 10 users at once.
-  sem_init(&leaderBoardLock, 0, 1);
+  sem_init(&leaderBoardLock, 0, 1); // Create lock so only one thread can update leader board at a time
 
   while (true) { // Continually run request acceptor.
-    sem_wait(&maxConcurrent); // Wait for available processor before accepting request.
+    sem_wait(&maxConcurrent); // Wait for available processor before accepting request. Only 10 for now.
 
     int newSock = accept(sock,(struct sockaddr *) &clientAddr, &addrLen);
     if (newSock < 0) {

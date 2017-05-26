@@ -8,7 +8,6 @@
 #include <string>
 #include <pthread.h>
 #include <semaphore.h>
-#include <vector>
 #include <cstring>
 #include <algorithm>
 
@@ -34,9 +33,6 @@ T_STR remove_leading(T_STR const & str, T_CHAR c)
 void send(string msgStr, int sock, int size) {
   string newString = string(size - msgStr.length(), '0') + msgStr;
 
-  if (newString.length() > size) {
-    exit(-1); // too long
-  }
   size++;
   char msg[size];
   strcpy(msg, newString.c_str());
