@@ -109,7 +109,7 @@ void* receiveRequest(void *arg) {
   int randomNumber = rand() % 10000; // rand() return a number between ​0​ and 9999;
 
   int nameLength = short(ntohs(stol(clientNameLength)));
-  string name = read(nameLength, localSockNum);
+  string name = read(nameLength - 1, localSockNum);
 
   if (name == string("BAD MESSAGE")) {
     sem_post(&leaderBoardLock);
