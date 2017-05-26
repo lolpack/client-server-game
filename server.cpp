@@ -81,8 +81,8 @@ int calculateDifference(int guess, int randomNumber) {
     sum += abs(randoMod - guessMod);
     cout << "abs(randoMod - guessMod)" << abs(randoMod - guessMod);
     cout << "sum " << sum << endl;
-    guessMod /= 10;
-    randoMod /= 10;
+    guess /= 10;
+    randomNumber /= 10;
   }
 
   return sum;
