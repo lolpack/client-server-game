@@ -124,7 +124,7 @@ int main(int argc, char** argv) {
   send(to_string(nameLength), socket, 5); // Send name length before name so server know how long it should be
   read(4, socket); // Wait for AWK
 
-  send(playerName, socket, nameLength + 1);
+  send(playerName, socket, nameLength);
 
   read(4, socket); // Wait for AWK
 
