@@ -114,7 +114,7 @@ void* receiveRequest(void *arg) {
     return (void*) z;
   }
 
-  cout << "Random number generated for " << name << randomNumber << endl;
+  cout << "Random number generated for " << name << "" << randomNumber << endl;
   cout.flush(); // Force cout before loop
 
   send(string("AWK"), localSockNum, 3);
