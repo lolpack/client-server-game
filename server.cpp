@@ -156,7 +156,7 @@ void* receiveRequest(void *arg) {
   winner.name = name;
   winner.turns = turns;
 
-  sem_wait(&leaderBoardLock);
+  sem_wait(&leaderBoardLock); // Critical section for updating the leader board
 
   leaderBoard->push(winner);
 
@@ -172,7 +172,7 @@ void* receiveRequest(void *arg) {
     tempwin->name = leaderBoard->top().name;
     tempwin->turns = leaderBoard->top().turns;
     leaderBoard->pop();
-    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin->name) + string(" ") + string(to_string(tempwin->turns)) + string("&&"); // Use delimiter so to replace carriage return
+    string eachRow = string(to_string(j + 1)) + string(". ") + string(tempwin->name) + string(" ") + string(to_string(tempwin->turns)) + string("&"); // Use delimiter so to replace carriage return
 
     leaderBoardText = leaderBoardText + eachRow;
 
