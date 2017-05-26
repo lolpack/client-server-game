@@ -77,10 +77,7 @@ int calculateDifference(int guess, int randomNumber) {
     int guessMod = guess % 10;
     int randoMod = randomNumber % 10;
 
-    cout << "Guess mod " << guessMod << " randoMod " << randoMod << endl;
     sum += abs(randoMod - guessMod);
-    cout << "abs(randoMod - guessMod)" << abs(randoMod - guessMod);
-    cout << "sum " << sum << endl;
     guess /= 10;
     randomNumber /= 10;
   }
@@ -107,6 +104,7 @@ void* receiveRequest(void *arg) {
   send(string("AWK"), localSockNum, 3); // Awk that length is received.
 
   int randomNumber = rand() % 10000; // rand() return a number between ​0​ and 9999;
+  cout << "Random number generated for: " << randomNumber;
 
   int nameLength = short(ntohs(stol(clientNameLength)));
   string name = read(nameLength, localSockNum);
@@ -116,8 +114,6 @@ void* receiveRequest(void *arg) {
     close(localSockNum);
     return (void*) z;
   }
-
-  cout << "Random number generated for " << name << ": " << randomNumber;
 
   send(string("AWK"), localSockNum, 3);
 
@@ -190,7 +186,7 @@ void* receiveRequest(void *arg) {
 
   sem_post(&leaderBoardLock);
 
-  send(leaderBoardText, localSockNum, 100000);
+  send(leaderBoardText, localSockNum, 1000);
   close(localSockNum);
   sem_post(&maxConcurrent);
 }

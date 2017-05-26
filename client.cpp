@@ -162,7 +162,7 @@ int main(int argc, char** argv) {
 
   // Logic to read the unformatted leader board from server
 
-  string leaderBoard = read(100001, socket);
+  string leaderBoard = read(1001, socket);
   replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n'); // Format for pretty printing.
 
   string leaderBoardSans0 = remove_leading(leaderBoard, '0');
