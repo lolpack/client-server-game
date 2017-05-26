@@ -117,6 +117,7 @@ int main(int argc, char** argv) {
   cout << "Welcome to Number Guessing Game! Enter your name:  ";
   cin >> playerName;
 
+  playerName += string("  "); // Breathing room
   int socket = getSocket(IPAddr, servPort);
 
   unsigned short nameLength = htons(short(playerName.length()));
@@ -132,6 +133,8 @@ int main(int argc, char** argv) {
   int turn = 1;
   bool correct = false;
 
+  cout << endl;
+
   while (!correct) {
     cout << "Turn: " << turn << endl;
     cout << "Enter a guess: ";
@@ -146,10 +149,10 @@ int main(int argc, char** argv) {
       string resultOfGuess = read(101, socket); // Wait for AWK
       int result = short(ntohs(stol(resultOfGuess)));
 
-      cout << "Result of guess: " << result << endl;
+      cout << "Result of guess: " << result << endl << endl;
 
       if (result == 0) {
-        cout << "Congratulations! It took " << turn << " turns to guess the number!"  << endl;
+        cout << "Congratulations! It took " << turn << " turns to guess the number!"  << endl << endl;
         correct = true;
       } else {
         turn++;
@@ -163,11 +166,11 @@ int main(int argc, char** argv) {
   // Logic to read the unformatted leader board from server
 
   string leaderBoard = read(501, socket);
-  replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n'); // Format for pretty printing.
+  replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n\n'); // Format for pretty printing.
 
   string leaderBoardSans0 = remove_leading(leaderBoard, '0');
   cout << "Leader board:\n";
-  cout << leaderBoardSans0 << endl;
+  cout << leaderBoardSans0;
 
   close(socket);
 }
