@@ -114,14 +114,14 @@ void* receiveRequest(void *arg) {
     return (void*) z;
   }
 
-  cout << "Random number generated for " << name << ": " << randomNumber;
+  cout << "Random number generated for " << name << ": " << randomNumber << endl;
+  cout.flush(); // Force cout before loop
 
   send(string("AWK"), localSockNum, 3);
 
   bool correct = false;
 
   while (!correct) {
-    cout << "Guess received" << endl;
     string guessString = read(101, localSockNum);
 
     if (guessString == string("BAD MESSAGE")) {
