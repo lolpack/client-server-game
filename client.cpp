@@ -138,7 +138,7 @@ int main(int argc, char** argv) {
 
     playerGuess = getInput();
     if (playerGuess > 9999 ||  playerGuess < 0) {
-      cout << "Guesses must be a number between 0 and 9999!" << endl;
+      cout << "Guesses must be a number between 0000 and 9999!" << endl;
     } else {
       unsigned short guess = htons(short(playerGuess));
       send(to_string(guess), socket, 100);
@@ -160,8 +160,10 @@ int main(int argc, char** argv) {
   unsigned short turns = htons(short(turn));
   send(to_string(turns), socket, 100);
 
-  string leaderBoard = read(501 , socket);
-  replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n');
+  // Logic to read the unformatted leader board from server
+
+  string leaderBoard = read(100001, socket);
+  replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n'); // Format for pretty printing.
 
   string leaderBoardSans0 = remove_leading(leaderBoard, '0');
   cout << "Leader board:\n";

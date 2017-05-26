@@ -60,7 +60,7 @@ string read(int messageSizeBytes, int socket) {
   while (bytesLeft > 0) {
     int bytesRecv = recv(socket, (void *)bp, bytesLeft, 0);
     if (bytesRecv <= 0) {
-      cerr << "Error receiving message" << endl;
+      cerr << "Error receiving message from client" << endl;
       return string("BAD MESSAGE");
     }
     bytesLeft = bytesLeft - bytesRecv;
@@ -71,16 +71,18 @@ string read(int messageSizeBytes, int socket) {
 }
 
 int calculateDifference(int guess, int randomNumber) {
-  int diff = guess - randomNumber;
-
-  int absDiff = abs(diff);
-
-  cout << "absDiff" << absDiff << endl;
   int sum = 0;
   // Pull off highest order number and add it to itself
-  for (int i = to_string(absDiff).length(); i >= 0; i--) {
-      sum += absDiff % 10;
-      absDiff /= 10;
+  for (int i = 4; i >= 0; i--) {
+    int guessMod = % 10;
+    int randoMod = % 10;
+
+    cout << "Guess mod " << guessMod << " randoMod " << randoMod << endl;
+    sum += abs(randoMod - guessMod)
+    cout << "abs(randoMod - guessMod)" << abs(randoMod - guessMod);
+    cout << "sum " << sum << endl;
+    guessMod /= 10;
+    randoMod /= 10;
   }
 
   return sum;
@@ -186,7 +188,7 @@ void* receiveRequest(void *arg) {
 
   sem_post(&leaderBoardLock);
 
-  send(leaderBoardText, localSockNum, 500);
+  send(leaderBoardText, localSockNum, 100000);
   close(localSockNum);
   sem_post(&maxConcurrent);
 }
