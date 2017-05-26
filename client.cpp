@@ -166,7 +166,7 @@ int main(int argc, char** argv) {
   // Logic to read the unformatted leader board from server
 
   string leaderBoard = read(501, socket);
-  replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n\n'); // Format for pretty printing.
+  replace( leaderBoard.begin(), leaderBoard.end(), '&', '\n'); // Format for pretty printing.
 
   string leaderBoardSans0 = remove_leading(leaderBoard, '0');
   cout << "Leader board:\n";
