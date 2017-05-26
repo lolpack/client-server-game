@@ -188,7 +188,7 @@ void* receiveRequest(void *arg) {
 
   sem_post(&leaderBoardLock);
 
-  send(leaderBoardText, localSockNum, 100000);
+  send(leaderBoardText, localSockNum, 1000);
   close(localSockNum);
   sem_post(&maxConcurrent);
 }
@@ -235,6 +235,7 @@ int main (int argc, char** argv) {
       cerr << "Error with incoming message, ignoring request" << endl;
     } else {
       cout << "Server started and listening on port " << PORT << endl;
+      cout.flush(); // Force cout before loop
       pthread_t clientThread;
 
       pthread_create(&clientThread, NULL, &receiveRequest, (void*) new int(newSock));
