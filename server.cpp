@@ -121,7 +121,7 @@ void* receiveRequest(void *arg) {
   bool correct = false;
 
   while (!correct) {
-    cout << "";
+    cout << "Guess received" << endl;
     string guessString = read(101, localSockNum);
 
     if (guessString == string("BAD MESSAGE")) {
@@ -234,6 +234,7 @@ int main (int argc, char** argv) {
     if (newSock < 0) {
       cerr << "Error with incoming message, ignoring request" << endl;
     } else {
+      cout << "Server started and listening on port " << PORT << endl;
       pthread_t clientThread;
 
       pthread_create(&clientThread, NULL, &receiveRequest, (void*) new int(newSock));
